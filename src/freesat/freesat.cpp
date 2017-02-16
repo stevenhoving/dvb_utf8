@@ -1,0 +1,170 @@
+/* FreeSat Huffman decoder for VDR
+ *
+ * Insert GPL license
+ */
+
+#include "freesat.h"
+#include <cstdio>
+#include <string>
+
+
+struct hufftab {
+    char from;
+    unsigned int value;
+    short bits;
+    char next;
+};
+
+#include "huffman.t.h"
+
+#define START   '\0'
+#define STOP    '\0'
+#define ESCAPE  '\1'
+
+
+static struct hufftab *tables[2][256];
+static int             table_size[2][256];
+
+void freesat_table_init()
+{
+    int this_table = -1;
+    unsigned char this_char = 0xff;
+    static bool runonce = true;
+
+    // Initialization to be done once only
+    if (!runonce)
+        return;
+    runonce = false;
+
+    for (int i = 0; i < 256; ++i) {
+        tables[0][i] = nullptr;
+        tables[1][i] = nullptr;
+        table_size[0][i] = 0;
+        table_size[1][i] = 0;
+    }
+
+    for (int i = 0; i < MEMTABLE_SIZE; ++i) {
+        if (memtable[i].from != this_char) {
+            this_char = memtable[i].from;
+            if (!this_char) { // Jumping to next table
+                this_table++;
+            }
+            tables[this_table][this_char] = &memtable[i];
+        }
+        table_size[this_table][this_char]++;
+    }
+}
+
+/** \brief Decode an EPG string as necessary
+ *
+ *  \param src - Possibly encoded string
+ *  \param size - Size of the buffer
+ *
+ *  \retval NULL - Can't decode
+ *  \return A decoded string
+ */
+std::string freesat_huffman_decode(dvb_utf8::stream_buffer &stream)
+{
+    std::string uncompressed;
+    int uncompressed_len = 30;
+
+    uint8_t tableid = stream.read<uint8_t>(1);
+    if (tableid != 1 && tableid != 2) {
+        // should return error... I guess
+        printf("error, invalid freesat huffman tableid\n");
+        return "";
+    }
+
+    tableid -= 1;
+    auto size = stream.size() - stream.tell();
+    auto src = &stream.data()[stream.tell()];
+
+    uncompressed.resize(uncompressed_len + 1);
+    unsigned value = 0, byte = 2, bit = 0;
+    int p = 0;
+    int lastch = START;
+
+    while (byte < 6 && byte < size) {
+        value |= src[byte] << ((5 - byte) * 8);
+        byte++;
+    }
+
+    freesat_table_init();   /**< Load the tables as necessary */
+
+    do {
+        int found = 0;
+        unsigned int bitShift = 0;
+        if (lastch == ESCAPE) {
+            const char nextCh = (value >> 24) & 0xff;
+            found = 1;
+            // Encoded in the next 8 bits.
+            // Terminated by the first ASCII character.
+            bitShift = 8;
+            if ((nextCh & 0x80) == 0)
+                lastch = nextCh;
+            if (p >= uncompressed_len) {
+                uncompressed_len += 10;
+                uncompressed.resize(uncompressed_len + 1);
+            }
+            uncompressed[p++] = nextCh;
+            uncompressed[p] = 0;
+        }
+        else
+        {
+            int j;
+            for (j = 0; j < table_size[tableid][lastch]; j++) {
+                unsigned mask = 0, maskbit = 0x80000000;
+                short kk;
+                for (kk = 0; kk < tables[tableid][lastch][j].bits; kk++) {
+                    mask |= maskbit;
+                    maskbit >>= 1;
+                }
+                if ((value & mask) == tables[tableid][lastch][j].value) {
+                    const char nextCh = tables[tableid][lastch][j].next;
+                    bitShift = tables[tableid][lastch][j].bits;
+                    if (nextCh != STOP && nextCh != ESCAPE) {
+                        if (p >= uncompressed_len) {
+                            uncompressed_len += 10;
+                            uncompressed.resize(uncompressed_len + 1);
+                        }
+                        uncompressed[p++] = nextCh;
+                        uncompressed[p] = 0;
+                    }
+                    found = 1;
+                    lastch = nextCh;
+                    break;
+                }
+            }
+        }
+        if (found) {
+            // Shift up by the number of bits.
+            for (unsigned int b = 0; b < bitShift; b++)
+            {
+                value = (value << 1) & 0xfffffffe;
+                if (byte < size)
+                    value |= (src[byte] >> (7 - bit)) & 1;
+                if (bit == 7)
+                {
+                    bit = 0;
+                    byte++;
+                }
+                else
+                {
+                    bit++;
+                }
+            }
+        }
+        else
+        {
+            printf("Missing table %d entry: <%s>\n", tableid + 1, uncompressed.c_str());
+            // Entry missing in table.
+
+            // \todo error situation, is skipping over the bytes we have parsed the correct thing todo?
+            stream.seek(byte, SEEK_CUR);
+            return uncompressed;
+        }
+    } while (lastch != STOP && value != 0);
+
+    stream.seek(byte, SEEK_CUR);
+    return uncompressed;
+}
