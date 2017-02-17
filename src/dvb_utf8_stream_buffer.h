@@ -85,12 +85,6 @@ public:
         return data_.empty();
     }
 
-    // hack..
-    void rewind()
-    {
-        index_ = 0;
-    }
-
     // \todo check limits...
     void seek(int offset, int origin)
     {

@@ -219,7 +219,7 @@ stream_buffer encode(const std::string &text, character_encoding encoding)
     auto result = stream_buffer();
     serialize_encoding(result, encoding);
     serialize_string(result, text, encoding);
-    result.rewind();
+    result.seek(0, SEEK_SET);
     return result;
 }
 
