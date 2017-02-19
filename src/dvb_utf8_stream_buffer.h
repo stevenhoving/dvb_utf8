@@ -53,8 +53,8 @@ public:
 
     void prep_write_(const int len)
     {
-        // overflow protection?
-        const int64_t total_length = data_.size() + len;
+        // \todo overflow/underflow protection.
+        const auto total_length = data_.size() + len;
         if (total_length >= std::numeric_limits<size_type>::max())
             throw std::runtime_error("Unable to resize stream buffer beyond 2^32");
 
