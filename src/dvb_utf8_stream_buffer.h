@@ -99,6 +99,9 @@ public:
         case SEEK_END:
             index_ = data_.size() - offset;
             break;
+        default:
+            throw std::runtime_error("Invalid seek origin value");
+            break;
         }
     }
 

@@ -35,6 +35,10 @@ void unicode_to_utf8(ucs4_t c, std::string &dst)
         dst += static_cast<char>(0x80 | ((c >> 6) & 0x3f));
         dst += static_cast<char>(0x80 | (c & 0x3f));
     }
+    else
+    {
+        throw std::runtime_error("unicode_to_utf8, invalid code point");
+    }
 }
 
 static inline
