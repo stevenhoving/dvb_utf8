@@ -2,6 +2,7 @@
 #define dvb_utf8_stream_buffer_h__
 
 #include <cstdint>
+#include <cstring>
 #include <vector>
 #include <limits>
 #include <stdexcept>
