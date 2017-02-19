@@ -6,7 +6,7 @@
 #include "freesat.h"
 #include <cstdio>
 #include <string>
-
+#include <array>
 
 struct hufftab {
     char from;
@@ -17,13 +17,14 @@ struct hufftab {
 
 #include "huffman.t.h"
 
-#define START   '\0'
-#define STOP    '\0'
-#define ESCAPE  '\1'
+static constexpr char START = '\0';
+static constexpr char STOP = '\0';
+static constexpr char ESCAPE = '\1';
 
+#define HUFFMAN_TABLE_SIZE 256
 
-static struct hufftab *tables[2][256];
-static int             table_size[2][256];
+static std::array<hufftab *, HUFFMAN_TABLE_SIZE> tables[2];
+static std::array<int, HUFFMAN_TABLE_SIZE> table_size[2];
 
 void freesat_table_init()
 {
@@ -36,7 +37,7 @@ void freesat_table_init()
         return;
     runonce = false;
 
-    for (int i = 0; i < 256; ++i) {
+    for (int i = 0; i < HUFFMAN_TABLE_SIZE; ++i) {
         tables[0][i] = nullptr;
         tables[1][i] = nullptr;
         table_size[0][i] = 0;
