@@ -47,7 +47,7 @@ public:
     {
         prep_write_(data.size());
         auto dst = &data_[index_];
-        memcpy(dst, data.data(), data.size());
+        memmove(dst, data.data(), data.size());
         index_ += data.size();
     }
 
