@@ -1,6 +1,7 @@
 #include "dvb_utf8.h"
 #include "helpers.h"
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include <string>
 
 using namespace dvb_utf8;

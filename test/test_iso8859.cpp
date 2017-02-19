@@ -1,6 +1,7 @@
 #include "dvb_utf8.h"
 #include "helpers.h"
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include <string>
 
 using namespace dvb_utf8;
@@ -32,5 +33,5 @@ TEST(test_iso8859, test_iso8859_2_decode)
         0x48, 0xC4, 0x99, 0x4E, 0x4B, 0xCB, 0x99
     });
 
-    EXPECT_EQ(decoded_text, utf8_data);
+    EXPECT_THAT(utf8_data, ::testing::ContainerEq(decoded_text));
 }

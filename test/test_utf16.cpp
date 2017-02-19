@@ -1,6 +1,7 @@
 #include "dvb_utf8.h"
 #include "helpers.h"
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include <string>
 
 using namespace dvb_utf8;
@@ -18,7 +19,7 @@ TEST(test_utf16, test_utf16be_decode)
         0xF0, 0x92, 0x8D, 0x85, 0x3D, 0x52, 0x61
     });
 
-    EXPECT_EQ(decoded_text, data_utf8);
+    EXPECT_THAT(decoded_text, ::testing::ContainerEq(decoded_text));
 }
 
 TEST(test_utf16, test_utf16le_decode)
@@ -34,5 +35,5 @@ TEST(test_utf16, test_utf16le_decode)
         0xF0, 0x92, 0x8D, 0x85, 0x3D, 0x52, 0x61
     });
 
-    EXPECT_EQ(decoded_text, data_utf8);
+    EXPECT_THAT(data_utf8, ::testing::ContainerEq(decoded_text));
 }

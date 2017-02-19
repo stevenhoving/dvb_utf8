@@ -1,6 +1,7 @@
 #include "dvb_utf8.h"
 #include "helpers.h"
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include <string>
 
 using namespace dvb_utf8;
@@ -28,7 +29,7 @@ TEST(test_iso6937, test_iso6937_euro_sign_decode)
         'h', 'e', 'n', 'k', 0xE2, 0x82, 0xac
     });
 
-    EXPECT_EQ(decoded_text, utf8_data);
+    EXPECT_THAT(utf8_data, ::testing::ContainerEq(decoded_text));
 }
 
 // test, the iso6937 2 byte composed character
@@ -44,5 +45,5 @@ TEST(test_iso6937, test_iso6937_2_byte_composed_decode)
         'h', 'e', 'n', 'k', 0xC3, 0x80, 0xC5, 0x83
     });
 
-    EXPECT_EQ(decoded_text, utf8_data);
+    EXPECT_THAT(utf8_data, ::testing::ContainerEq(decoded_text));
 }

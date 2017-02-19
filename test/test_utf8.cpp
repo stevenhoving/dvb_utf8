@@ -1,6 +1,7 @@
 #include "dvb_utf8.h"
 #include "helpers.h"
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include <string>
 
 using namespace dvb_utf8;
@@ -36,5 +37,5 @@ TEST(test_utf8, test_utf8_non_latin_decode)
     auto data_utf8 = std::string(data.begin(), data.end());
     data_utf8.erase(data_utf8.begin());
 
-    EXPECT_EQ(decoded_text, data_utf8);
+    EXPECT_THAT(data_utf8, ::testing::ContainerEq(decoded_text));
 }
