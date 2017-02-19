@@ -41,7 +41,7 @@ character_encoding get_encoding_dvb_0x10(uint16_t identifier)
 static
 character_encoding deserialize_encoding(stream_buffer &stream)
 {
-    uint8_t character_code_table_id = stream.read<uint8_t>(1);
+    uint8_t character_code_table_id = stream.read<uint8_t>();
 
     character_encoding encoding = character_encoding::invalid;
 
@@ -109,7 +109,7 @@ character_encoding deserialize_encoding(stream_buffer &stream)
             *      table specified in table A.4."
             */
         case 0x10: { // ISO8859
-            uint16_t n = stream.read<uint8_t>(1) << 8 | stream.read<uint8_t>(1); // character code table
+            uint16_t n = stream.read<uint8_t>() << 8 | stream.read<uint8_t>(); // character code table
             encoding = get_encoding_dvb_0x10(n);
         } break;
         case 0x11: // ISO10646 (BMP)
@@ -152,7 +152,7 @@ character_encoding deserialize_encoding(stream_buffer &stream)
             *      the value of this field are found in TS 101 162 [i.1]."
             */
         case 0x1F: { // Described by encoding_type_id
-            auto encoding_type_id = stream.read<uint8_t>(1);
+            auto encoding_type_id = stream.read<uint8_t>();
             //uint8_t encoding_type_id = data[index++]; // \todo shizzle found in 'TS 101 162' (what ever that means).
 
             // \todo until we implemented the freeset huffman decoding we mark

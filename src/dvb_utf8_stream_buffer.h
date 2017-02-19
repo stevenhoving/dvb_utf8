@@ -61,28 +61,19 @@ public:
             data_.resize(static_cast<size_type>(total_length));
     }
 
-    // \todo redesign these read template functions, clang and gcc does not like this.
+    /* cover floats and integers
+     * \todo fix incorrect handling of different endianness. As atm the
+     * endianness of the target platform is used.
+     */
     template<typename T>
-    T read(const int len)
+    auto read() const -> std::enable_if_t<std::is_arithmetic<T>::value, T>
     {
-        if (len > sizeof(T))
-            throw std::runtime_error("Unable to read more than the size of the result variable");
+        if (sizeof(T) + index_ > data_.size())
+            throw std::runtime_error("Unable to read beyond the buffer size");
 
-        T result;
-        memcpy(&result, &data_[index_], len);
-        index_ += len;
-        return result;
-    }
-
-    template<>
-    uint8_t read<uint8_t>(const int len)
-    {
-        if (len > sizeof(uint8_t))
-            throw std::runtime_error("panic");
-
-        uint8_t result = (uint8_t)data_[index_];
-        index_ += len;
-        return result;
+        auto result = static_cast<const T*>(&data_[index_]);
+        index_ += sizeof(T);
+        return *result;
     }
 
     bool empty() const noexcept
@@ -151,7 +142,7 @@ public:
     }
 
     value_type data_ = {};
-    int32_t index_ = 0;
+    mutable int32_t index_ = 0;
 };
 
 } // namespace dvb_utf8

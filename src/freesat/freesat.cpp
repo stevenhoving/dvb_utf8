@@ -69,7 +69,7 @@ std::string freesat_huffman_decode(dvb_utf8::stream_buffer &stream)
     std::string uncompressed;
     int uncompressed_len = 30;
 
-    uint8_t tableid = stream.read<uint8_t>(1);
+    uint8_t tableid = stream.read<uint8_t>();
     if (tableid != 1 && tableid != 2) {
         // should return error... I guess
         printf("error, invalid freesat huffman tableid\n");
