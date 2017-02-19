@@ -206,6 +206,9 @@ void serialize_string(stream_buffer &stream, const std::string &text, character_
     case character_encoding::utf16le:
         stream.write(utf16le::from_utf8()(text));
         break;
+    case character_encoding::ucs2be:
+        stream.write(ucs2be::from_utf8()(text));
+        break;
     default:
         printf("warning, attempting to write unsupported encoding type\n");
         break;
