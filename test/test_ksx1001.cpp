@@ -117,16 +117,5 @@ TEST(test_ksx1001, test_ksx1001_decode)
         0xB0, 0x81, 0x20, 0xEB, 0xB0, 0x9C, 0xEC, 0x86, 0xA1, 0xED, 0x96, 0x88, 0xEB, 0x8B, 0xA4, 0x2E
     });
 
-    bool same = decoded_text == utf8_data;
-    for (size_t i = 0; i < decoded_text.size(); i++)
-    {
-        auto a = decoded_text.at(i);
-        auto b = utf8_data.at(i);
-        if (a != b)
-        {
-            printf("[%d] 0x%02X 0x%02X\n", i, a, b);
-        }
-    }
-
     EXPECT_THAT(utf8_data, ::testing::ContainerEq(decoded_text));
 }
