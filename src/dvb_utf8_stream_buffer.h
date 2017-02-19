@@ -82,24 +82,33 @@ public:
         return data_.empty();
     }
 
-    // \todo check limits...
-    void seek(int offset, int origin)
+    // \todo fix integer math issues (int = int + int).
+    void seek(const int offset, const int origin) const
     {
+        int32_t new_index = 0;
         switch (origin)
         {
         case SEEK_SET:
-            index_ = offset;
+            new_index = offset;
             break;
         case SEEK_CUR:
-            index_ += offset;
+            new_index = index_ + offset;
             break;
         case SEEK_END:
-            index_ = data_.size() - offset;
+            new_index = (data_.size() - 1) - offset;
             break;
         default:
             throw std::runtime_error("Invalid seek origin value");
             break;
         }
+
+        if (new_index < 0)
+            throw std::runtime_error("Invalid seek new index, negative");
+
+        if (static_cast<size_type>(new_index) >= data_.size())
+            throw std::runtime_error("Invalid seek new index, to big");
+
+        index_ = new_index;
     }
 
     uint8_t *data() noexcept
