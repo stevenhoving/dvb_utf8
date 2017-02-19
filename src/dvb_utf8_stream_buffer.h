@@ -13,16 +13,21 @@ class stream_buffer
 {
     using value_type = std::vector<uint8_t>;
     using size_type = value_type::size_type;
-    using iterator_type = value_type::iterator;
-    using const_iterator_type = value_type::const_iterator;
 public:
     stream_buffer() = default;
 
-    // \todo add move operator
-    stream_buffer(const std::vector<uint8_t> & data)
+    explicit stream_buffer(const std::vector<uint8_t> &data)
         : data_(data)
     {
     }
+
+    explicit stream_buffer(std::vector<uint8_t> &&data)
+        : data_(std::move(data))
+    {
+    }
+
+    stream_buffer(stream_buffer &&other) = default;
+    stream_buffer &operator=(stream_buffer &&other) = default;
 
     void write(const uint8_t value)
     {
@@ -45,10 +50,10 @@ public:
         index_ += data.size();
     }
 
-    void prep_write_(int len)
+    void prep_write_(const int len)
     {
         // overflow protection?
-        int64_t total_length = data_.size() + len;
+        const int64_t total_length = data_.size() + len;
         if (total_length >= std::numeric_limits<size_type>::max())
             throw std::runtime_error("Unable to resize stream buffer beyond 2^32");
 
@@ -56,12 +61,12 @@ public:
             data_.resize(static_cast<size_type>(total_length));
     }
 
-    // todo implement specializations
+    // \todo redesign these read template functions, clang and gcc does not like this.
     template<typename T>
     T read(const int len)
     {
         if (len > sizeof(T))
-            throw std::runtime_error("panic");
+            throw std::runtime_error("Unable to read more than the size of the result variable");
 
         T result;
         memcpy(&result, &data_[index_], len);
@@ -80,7 +85,7 @@ public:
         return result;
     }
 
-    bool empty() const
+    bool empty() const noexcept
     {
         return data_.empty();
     }
@@ -105,37 +110,42 @@ public:
         }
     }
 
-    uint8_t *data()
+    uint8_t *data() noexcept
     {
         return data_.data();
     }
 
-    size_type tell() const
+    const uint8_t *data() const noexcept
+    {
+        return data_.data();
+    }
+
+    size_type tell() const noexcept
     {
         return index_;
     }
 
-    size_type size() const
+    size_type size() const noexcept
     {
         return data_.size();
     }
 
-    iterator_type begin()
+    auto begin() noexcept
     {
         return data_.begin();
     }
 
-    iterator_type end()
+    auto end() noexcept
     {
         return data_.end();
     }
 
-    const_iterator_type begin() const
+    auto begin() const noexcept
     {
         return data_.begin();
     }
 
-    const_iterator_type end() const
+    auto end() const noexcept
     {
         return data_.end();
     }
