@@ -8,7 +8,7 @@ namespace converter_factory
 template<typename InputConverter, typename OutputConverter>
 struct from_utf8
 {
-    std::vector<uint8_t> operator()(const std::string &text)
+    std::vector<uint8_t> operator()(const std::string &text) const
     {
         std::vector<uint8_t> result;
         for (auto i = 0u; i < text.size();)
@@ -44,7 +44,7 @@ struct from_utf8
 template<typename InputConverter, typename OutputConverter>
 struct to_utf8
 {
-    std::string operator()(stream_buffer &data)
+    std::string operator()(stream_buffer &data) const
     {
         auto src = &data.data()[data.tell()];
         auto len = data.size() - data.tell();
