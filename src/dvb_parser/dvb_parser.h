@@ -86,25 +86,25 @@ struct descriptor_container
         switch (descriptor_tag)
         {
         case VBI_DATA_DESCRIPTOR: // 0x45
-            descriptors.emplace_back(std::make_shared<vbi_data_descriptor>(stream));
+            descriptors.emplace_back(std::make_unique<vbi_data_descriptor>(stream));
             break;
         case COUNTRY_AVAILABILITY_DESCRIPTOR: // 0x49
-            descriptors.emplace_back(std::make_shared<country_availability_descriptor>(stream));
+            descriptors.emplace_back(std::make_unique<country_availability_descriptor>(stream));
             break;
         case SHORT_EVENT_DESCRIPTOR: // 0x4D
-            descriptors.emplace_back(std::make_shared<short_event_descriptor>(stream));
+            descriptors.emplace_back(std::make_unique<short_event_descriptor>(stream));
             break;
         case EXTENDED_EVENT_DESCRIPTOR: // 0x4E
-            descriptors.emplace_back(std::make_shared<extended_event_descriptor>(stream));
+            descriptors.emplace_back(std::make_unique<extended_event_descriptor>(stream));
             break;
         case CONTENT_DESCRIPTOR: // 0x54
-            descriptors.emplace_back(std::make_shared<content_descriptor>(stream));
+            descriptors.emplace_back(std::make_unique<content_descriptor>(stream));
             break;
         case PARENTAL_RATING_DESCRIPTOR: // 0x55
-            descriptors.emplace_back(std::make_shared<parental_rating_descriptor>(stream));
+            descriptors.emplace_back(std::make_unique<parental_rating_descriptor>(stream));
             break;
         case RELATED_CONTENT_DESCRIPTOR: // 0x74
-            descriptors.emplace_back(std::make_shared<related_content_descriptor>(stream));
+            descriptors.emplace_back(std::make_unique<related_content_descriptor>(stream));
             break;
         default:
             __debugbreak();
@@ -112,7 +112,7 @@ struct descriptor_container
         }
     }
 
-    std::vector<std::shared_ptr<descriptor>> descriptors;
+    std::vector<std::unique_ptr<descriptor>> descriptors;
 };
 
 struct event : descriptor_container
