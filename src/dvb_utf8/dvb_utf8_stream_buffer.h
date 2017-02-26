@@ -72,9 +72,33 @@ public:
         if (sizeof(T) + index_ > data_.size())
             throw std::runtime_error("Unable to read beyond the buffer size");
 
-        auto result = static_cast<const T*>(&data_[index_]);
+        //auto result = static_cast<const T*>(&data_[index_]);
+        auto result = (const T*)(&data_[index_]);
         index_ += sizeof(T);
         return *result;
+    }
+
+    template<typename T>
+    auto peek() const -> std::enable_if_t<std::is_arithmetic<T>::value, T>
+    {
+        if (sizeof(T) + index_ > data_.size())
+            throw std::runtime_error("Unable to peek beyond the buffer size");
+
+        return *(const T*)(&data_[index_]);
+    }
+
+    // \todo check for length limits... and fix unsigned / signed undefined behavour.
+    std::vector<uint8_t> read_buffer(const int length) const
+    {
+        if ((uint64_t)length + index_ > data_.size())
+            throw std::runtime_error("Unable to read buffer beyond the buffer size");
+
+        auto result = std::vector<uint8_t>();
+        result.resize(length);
+
+        memmove(result.data(), &data_[index_], length);
+        index_ += length;
+        return result;
     }
 
     bool empty() const noexcept
@@ -105,7 +129,7 @@ public:
         if (new_index < 0)
             throw std::runtime_error("Invalid seek new index, negative");
 
-        if (static_cast<size_type>(new_index) >= data_.size())
+        if (static_cast<size_type>(new_index) > data_.size())
             throw std::runtime_error("Invalid seek new index, to big");
 
         index_ = new_index;
@@ -131,6 +155,12 @@ public:
         return data_.size();
     }
 
+    bool eos() const noexcept
+    {
+        // \todo use static cast
+        return (size_type)index_ >= data_.size();
+    }
+
     auto begin() noexcept
     {
         return data_.begin();
@@ -151,8 +181,41 @@ public:
         return data_.end();
     }
 
+    bool has_range() const noexcept
+    {
+        return range_begin_ != -1;
+    }
+
+    void range_set(const int32_t length) const noexcept
+    {
+        range_begin_ = index_;
+        range_end_ = index_ + length;
+    }
+
+    void range_mark_end() const
+    {
+        if (index_ != range_end_)
+            throw std::runtime_error("stream buffer 'sub' range not satisfied");
+
+        range_begin_ = -1;
+        range_end_ = -1;
+    }
+
+    bool range_eos() const noexcept
+    {
+        return index_ == range_end_;
+    }
+
+    int range_size() const noexcept
+    {
+        return range_end_ - range_begin_;
+    }
+
     value_type data_ = {};
-    mutable int32_t index_ = 0;
+    mutable int32_t index_ = 0; // read index
+
+    mutable int32_t range_begin_ = -1;
+    mutable int32_t range_end_ = -1;
 };
 
 } // namespace dvb_utf8

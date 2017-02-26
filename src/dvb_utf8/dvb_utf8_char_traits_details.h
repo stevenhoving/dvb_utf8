@@ -44,12 +44,16 @@ struct from_utf8
 template<typename InputConverter, typename OutputConverter>
 struct to_utf8
 {
-    std::string operator()(stream_buffer &data) const
+    std::string operator()(stream_buffer &stream) const
     {
-        auto src = &data.data()[data.tell()];
-        auto len = data.size() - data.tell();
+        auto src = &stream.data()[stream.tell()];
+        auto len = stream.size() - stream.tell();
+        if (stream.has_range())
+            len = stream.range_size();
+
         std::string result;
-        for (std::size_t i = 0; i < len;)
+        std::size_t i;
+        for (i = 0; i < len;)
         {
             ucs4_t pwc;
             int converted_left = InputConverter()(&pwc, src + i, len - i);
@@ -64,6 +68,8 @@ struct to_utf8
             }
             OutputConverter()(pwc, result);
         }
+
+        stream.seek(i, SEEK_CUR);
 
         // weird edge case, trim the line ending...
         if (result[result.size() - 1] == '\0')

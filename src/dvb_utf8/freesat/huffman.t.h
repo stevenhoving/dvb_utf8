@@ -5190,4 +5190,4 @@ struct hufftab memtable[] = {
 };
 
 //#define	MEMTABLE_SIZE	5187
-#define	MEMTABLE_SIZE (sizeof(memtable) / sizeof(memtable[0]))
+#define	MEMTABLE_SIZE int(sizeof(memtable) / sizeof(memtable[0]))
