@@ -24,13 +24,15 @@ struct short_event_descriptor : descriptor
             | (uint32_t)stream.read<uint8_t>() << 8
             | (uint32_t)stream.read<uint8_t>();
 
-        auto event_name_len = stream.read<uint8_t>();
-        event_name = dvb_utf8::decode(
-            dvb_utf8::stream_buffer(stream.read_buffer(event_name_len)));
+        auto event_name_length = stream.read<uint8_t>();
+        if (event_name_length)
+            event_name = dvb_utf8::decode(
+                dvb_utf8::stream_buffer(stream.read_buffer(event_name_length)));
 
-        auto text_len = stream.read<uint8_t>();
-        text = dvb_utf8::decode(
-            dvb_utf8::stream_buffer(stream.read_buffer(text_len)));
+        auto text_length = stream.read<uint8_t>();
+        if (text_length)
+            text = dvb_utf8::decode(
+                dvb_utf8::stream_buffer(stream.read_buffer(text_length)));
 
         printf("event name: %s\n", event_name.c_str());
         printf("event text: %s\n", text.c_str());
@@ -141,13 +143,15 @@ struct extended_event
 {
     extended_event(const dvb_utf8::stream_buffer &stream)
     {
-        uint8_t item_description_length = stream.read<uint8_t>();
-        item_description = dvb_utf8::decode(
-            dvb_utf8::stream_buffer(stream.read_buffer(item_description_length)));
+        auto item_description_length = stream.read<uint8_t>();
+        if (item_description_length)
+            item_description = dvb_utf8::decode(
+                dvb_utf8::stream_buffer(stream.read_buffer(item_description_length)));
 
-        uint8_t item_length = stream.read<uint8_t>();
-        item = dvb_utf8::decode(
-            dvb_utf8::stream_buffer(stream.read_buffer(item_length)));
+        auto item_length = stream.read<uint8_t>();
+        if (item_length)
+            item = dvb_utf8::decode(
+                dvb_utf8::stream_buffer(stream.read_buffer(item_length)));
 
         printf("extended_event - desc: %s, item: %s\n", item_description.c_str(), item.c_str());
     }
@@ -176,9 +180,10 @@ struct extended_event_descriptor : descriptor
         while (!stream.range_eos())
             items.emplace_back(extended_event(stream));
 
-        uint8_t text_length = stream.read<uint8_t>();
-        text = dvb_utf8::decode(
-            dvb_utf8::stream_buffer(stream.read_buffer(text_length)));
+        auto text_length = stream.read<uint8_t>();
+        if (text_length)
+            text = dvb_utf8::decode(
+                dvb_utf8::stream_buffer(stream.read_buffer(text_length)));
 
         printf("extended_event_descriptor: %s\n", text.c_str());
     }
