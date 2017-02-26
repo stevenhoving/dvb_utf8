@@ -44,28 +44,22 @@ void print_hexview(const std::vector<uint8_t> &data)
 
 int main()
 {
-    auto stream = dvb_utf8::stream_buffer(hex_packet_to_data(hex_packet_pid18_2));
+    //auto stream = dvb_utf8::stream_buffer(hex_packet_to_data(hex_packet_pid18_3));
+    auto stream = dvb_utf8::stream_buffer(read_test_data("D:/dev/dvb_utf8/pid18.raw"));
 
     bool fail = false;
     while (!stream.eos() && fail == false)
     {
         auto table_id = stream.peek<uint8_t>();
 
-        switch (table_id)
-        {
-        case 0x42: {
-            auto section = dvb_parse::service_description_section(stream);
-        } break;
-
-        case 0x4E: case 0x4F:
-        case 0x60: case 0x61: case 0x62: case 0x63: case 0x64: case 0x65: case 0x66: case 0x67:
-        case 0x68: case 0x69: case 0x6A: case 0x6B: case 0x6C: case 0x6D: case 0x6E: case 0x6F: {
+        if (table_id >= 0x4E && table_id <= 0x6F)
             auto section = dvb_parse::event_information_section(stream);
-        } break;
-        default:
+        else if (table_id == 0x42)
+            auto section = dvb_parse::service_description_section(stream);
+        else
+        {
             printf("unsupported table id: 0x%X(%u)\n", table_id, table_id);
             fail = true;
-            break;
         }
     }
 
