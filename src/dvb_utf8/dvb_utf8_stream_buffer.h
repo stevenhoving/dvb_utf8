@@ -87,16 +87,17 @@ public:
         return *(const T*)(&data_[index_]);
     }
 
-    // \todo check for length limits... and fix unsigned / signed undefined behavour.
+    // \todo check for length limits... and fix unsigned / signed undefined behavior.
     std::vector<uint8_t> read_buffer(const int length) const
     {
         if ((uint64_t)length + index_ > data_.size())
             throw std::runtime_error("Unable to read buffer beyond the buffer size");
 
-        auto result = std::vector<uint8_t>();
-        result.resize(length);
+        auto result = std::vector<uint8_t>(
+            &data_[index_],
+            &data_[index_ + length]
+        );
 
-        memmove(result.data(), &data_[index_], length);
         index_ += length;
         return result;
     }
