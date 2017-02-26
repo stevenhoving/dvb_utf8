@@ -6,6 +6,7 @@
 
 using namespace dvb_utf8;
 
+#if DVB_UTF8_ENABLE_ENCODE
 TEST(test_gb18030, test_gb18030_encode_decode)
 {
     auto test_text = std::string("hello world");
@@ -14,6 +15,7 @@ TEST(test_gb18030, test_gb18030_encode_decode)
 
     EXPECT_THAT(test_text, ::testing::ContainerEq(decoded_text));
 }
+#endif // DVB_UTF8_ENABLE_ENCODE
 
 TEST(test_gb18030, test_gb18030_decode)
 {

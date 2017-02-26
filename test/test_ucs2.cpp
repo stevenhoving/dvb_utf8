@@ -28,6 +28,7 @@ TEST(test_ucs2, test_ucs2be_decode)
     EXPECT_THAT(data_utf8, ::testing::ContainerEq(decoded_text));
 }
 
+#if DVB_UTF8_ENABLE_ENCODE
 TEST(test_ucs2, test_ucs2be_encode_decode)
 {
     // dvb data stream with encoding identifier token for ucs2be (0x11).
@@ -147,3 +148,4 @@ TEST(test_ucs2, test_ucs2be_encode_decode)
     // always fail, fix this unit test.
     EXPECT_EQ(false, true);
 }
+#endif // DVB_UTF8_ENABLE_ENCODE
