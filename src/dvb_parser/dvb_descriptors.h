@@ -116,6 +116,32 @@ struct vbi_data_descriptor : descriptor
     std::vector<vbi_data_service> services;
 };
 
+struct service_descriptor : descriptor
+{
+    service_descriptor(const dvb_utf8::stream_buffer &stream)
+        : descriptor(stream)
+    {
+        service_type = stream.read<uint8_t>();
+        uint8_t service_provider_name_length = stream.read<uint8_t>();
+
+        service_provider_name = dvb_utf8::decode(
+            dvb_utf8::stream_buffer(stream.read_buffer(service_provider_name_length)));
+
+        uint8_t service_name_length = stream.read<uint8_t>();
+
+        service_name = dvb_utf8::decode(
+            dvb_utf8::stream_buffer(stream.read_buffer(service_name_length)));
+
+        printf("service_descriptor - provider name: %s, name: %s\n",
+            service_provider_name.c_str(),
+            service_name.c_str()
+        );
+    }
+    uint8_t service_type;
+    std::string service_provider_name;
+    std::string service_name;
+};
+
 struct country_availability_descriptor : descriptor
 {
     country_availability_descriptor(const dvb_utf8::stream_buffer &stream)

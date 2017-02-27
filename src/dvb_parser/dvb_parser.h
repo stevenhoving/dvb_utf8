@@ -86,27 +86,39 @@ struct descriptor_container
         switch (descriptor_tag)
         {
         case VBI_DATA_DESCRIPTOR: // 0x45
+            printf("vbi_data_descriptor\n");
             descriptors.emplace_back(std::make_unique<vbi_data_descriptor>(stream));
             break;
+        case SERVICE_DESCRIPTOR: // 0x48
+            printf("service_descriptor\n");
+            descriptors.emplace_back(std::make_unique<service_descriptor>(stream));
+            break;
         case COUNTRY_AVAILABILITY_DESCRIPTOR: // 0x49
+            printf("country_availability_descriptor\n");
             descriptors.emplace_back(std::make_unique<country_availability_descriptor>(stream));
             break;
         case SHORT_EVENT_DESCRIPTOR: // 0x4D
+            printf("short_event_descriptor\n");
             descriptors.emplace_back(std::make_unique<short_event_descriptor>(stream));
             break;
         case EXTENDED_EVENT_DESCRIPTOR: // 0x4E
+            printf("extended_event_descriptor\n");
             descriptors.emplace_back(std::make_unique<extended_event_descriptor>(stream));
             break;
         case CONTENT_DESCRIPTOR: // 0x54
+            printf("content_descriptor\n");
             descriptors.emplace_back(std::make_unique<content_descriptor>(stream));
             break;
         case PARENTAL_RATING_DESCRIPTOR: // 0x55
+            printf("parental_rating_descriptor\n");
             descriptors.emplace_back(std::make_unique<parental_rating_descriptor>(stream));
             break;
         case RELATED_CONTENT_DESCRIPTOR: // 0x74
+            printf("related_content_descriptor\n");
             descriptors.emplace_back(std::make_unique<related_content_descriptor>(stream));
             break;
         default:
+            printf("unimplemented descriptor tag: 0x%X (%u)\n", descriptor_tag, descriptor_tag);
             __debugbreak();
         break;
         }
@@ -216,6 +228,7 @@ struct service_description_section : long_crc_section
         : long_crc_section(stream)
     {
         original_network_id = stream.read<uint16_t>();
+        uint8_t reserved = stream.read<uint8_t>();
 
         while (stream.tell() < section_stream_end - 4)
             descriptions.emplace_back(service_description(stream));
