@@ -11,7 +11,7 @@
 namespace dvb_utf8
 {
 static inline
-void unicode_to_utf8(ucs4_t c, std::string &dst)
+void unicode_to_utf8(const ucs4_t c, std::string &dst)
 {
     if (c < 0x80)
     {

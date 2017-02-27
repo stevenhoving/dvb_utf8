@@ -30,20 +30,20 @@ public:
     stream_buffer(stream_buffer &&other) = default;
     stream_buffer &operator=(stream_buffer &&other) = default;
 
-    void write(const uint8_t value)
+    void write(const uint8_t value) const
     {
         prep_write_(sizeof(value));
         data_[index_++] = value;
     }
 
-    void write(const uint16_t value)
+    void write(const uint16_t value) const
     {
         prep_write_(sizeof(value));
         data_[index_++] = value & 0xFF;
         data_[index_++] = (value >> 8) & 0xFF;
     }
 
-    void write(const value_type &data)
+    void write(const value_type &data) const
     {
         prep_write_(data.size());
         auto dst = &data_[index_];
@@ -51,7 +51,7 @@ public:
         index_ += data.size();
     }
 
-    void prep_write_(const int len)
+    void prep_write_(const int len) const
     {
         // \todo overflow/underflow protection.
         const auto total_length = data_.size() + len;
@@ -212,7 +212,7 @@ public:
         return range_end_ - range_begin_;
     }
 
-    value_type data_ = {};
+    mutable value_type data_ = {};
     mutable int32_t index_ = 0; // read index
 
     mutable int32_t range_begin_ = -1;

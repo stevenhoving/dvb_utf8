@@ -217,11 +217,6 @@ struct service_description_section : long_crc_section
     {
         original_network_id = stream.read<uint16_t>();
 
-        // also fucked up
-        //uint16_t bytesLeft = section_length > 12 ? section_length - 12 : 0;
-        //auto pos_begin = stream.tell();
-        //auto pos_end = pos_begin + bytesLeft;
-        //while (stream.tell() < pos_end)
         while (stream.tell() < section_stream_end - 4)
             descriptions.emplace_back(service_description(stream));
 
