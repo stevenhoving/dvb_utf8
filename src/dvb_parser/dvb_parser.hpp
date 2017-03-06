@@ -1,11 +1,11 @@
-#ifndef dvb_parser_h__
-#define dvb_parser_h__
+#ifndef dvb_parser_hpp__
+#define dvb_parser_hpp__
 
 #include <memory>
 
 #include "dvb_utf8.h"
-#include "dvb_description_tag.h"
-#include "dvb_descriptors.h"
+#include "dvb_description_tag.hpp"
+#include "dvb_descriptors.hpp"
 
 namespace dvb_parse
 {
@@ -205,8 +205,8 @@ struct service_description : descriptor_container
             | stream.read<uint8_t>();
 
         // \todo double check, but my gut feeling is that this is wrong.
-        if (descriptors_loop_length > 5)
-            descriptors_loop_length -= 5;
+        //if (descriptors_loop_length > 5)
+            //descriptors_loop_length -= 5;
 
         auto pos_end = stream.tell() + descriptors_loop_length;
 
@@ -230,7 +230,8 @@ struct service_description_section : long_crc_section
         original_network_id = stream.read<uint16_t>();
         uint8_t reserved = stream.read<uint8_t>();
 
-        while (stream.tell() < section_stream_end - 4)
+        //while (stream.tell() < section_stream_end - 4)
+        while (!stream.range_eos())
             descriptions.emplace_back(service_description(stream));
 
         read_crc(stream);
@@ -240,6 +241,15 @@ struct service_description_section : long_crc_section
     std::vector<service_description> descriptions;
 };
 
+struct network_information_section : long_crc_section
+{
+    network_information_section(const dvb_utf8::stream_buffer &stream)
+        : long_crc_section(stream)
+    {
+        read_crc(stream);
+    }
+};
+
 } // namespace dvb_parse
 
-#endif // dvb_parser_h__
+#endif // dvb_parser_hpp__
