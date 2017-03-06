@@ -1,18 +1,7 @@
-#ifndef dvb_descriptors_h__
-#define dvb_descriptors_h__
+#ifndef dvb_descriptors_hpp__
+#define dvb_descriptors_hpp__
 
-struct descriptor
-{
-    descriptor(const dvb_utf8::stream_buffer &stream)
-    {
-        tag = stream.read<uint8_t>();
-        length = stream.read<uint8_t>();
-
-        stream.range_set(length);
-    }
-    uint8_t tag;
-    uint8_t length;
-};
+#include "descriptors/descriptors.hpp"
 
 struct short_event_descriptor : descriptor
 {
@@ -34,8 +23,8 @@ struct short_event_descriptor : descriptor
             text = dvb_utf8::decode(
                 dvb_utf8::stream_buffer(stream.read_buffer(text_length)));
 
-        printf("event name: %s\n", event_name.c_str());
-        printf("event text: %s\n", text.c_str());
+        //printf("event name: %s\n", event_name.c_str());
+        //printf("event text: %s\n", text.c_str());
     }
 
     uint32_t iso_639_language_code;
@@ -56,65 +45,7 @@ struct related_content_descriptor : descriptor
     std::string content_description;
 };
 
-struct vbi_data_line
-{
-    vbi_data_line(const dvb_utf8::stream_buffer &stream)
-    {
-        auto data = stream.read<uint8_t>();
-        fieldParity = (data >> 5) & 0x01;
-        lineOffset = data & 0x1F;
-    }
 
-    // todo replace this with just a normal uint8_t and with getter functions.
-    uint8_t fieldParity : 1;
-    uint8_t lineOffset : 5;
-};
-
-struct vbi_data_service
-{
-    vbi_data_service(const dvb_utf8::stream_buffer &stream)
-    {
-        data_service_id = stream.read<uint8_t>();
-        data_service_descriptor_length = stream.read<uint8_t>();
-
-        switch (data_service_id)
-        {
-        case 0x01:
-        case 0x02:
-        case 0x04:
-        case 0x05:
-        case 0x06:
-        case 0x07:
-            for (unsigned int i = 0; i < data_service_descriptor_length; ++i)
-                vbi_data_lines.emplace_back(vbi_data_line(stream));
-            break;
-
-        default:
-            // skip stuff that is 'reserved'
-            stream.seek(data_service_descriptor_length, SEEK_CUR);
-            printf("vbi_data_service, reserved id\n");
-            break;
-        }
-    }
-
-    uint8_t data_service_id;
-    uint8_t data_service_descriptor_length;
-    std::vector<vbi_data_line> vbi_data_lines;
-};
-
-struct vbi_data_descriptor : descriptor
-{
-    vbi_data_descriptor(const dvb_utf8::stream_buffer &stream)
-        : descriptor(stream)
-    {
-        while (!stream.range_eos())
-            services.emplace_back(vbi_data_service(stream));
-
-        stream.range_mark_end();
-    }
-
-    std::vector<vbi_data_service> services;
-};
 
 struct service_descriptor : descriptor
 {
@@ -278,4 +209,4 @@ struct content_descriptor : descriptor
     std::vector<content_descriptor_item> items;
 };
 
-#endif // dvb_descriptors_h__
+#endif // dvb_descriptors_hpp__
