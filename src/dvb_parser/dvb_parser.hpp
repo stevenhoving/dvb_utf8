@@ -5,7 +5,7 @@
 
 #include "dvb_utf8.h"
 #include "dvb_description_tag.hpp"
-#include "dvb_descriptors.hpp"
+#include "descriptors/descriptors.hpp"
 
 namespace dvb_parse
 {
