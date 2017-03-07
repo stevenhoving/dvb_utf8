@@ -22,7 +22,7 @@ public:
     {
     }
 
-    explicit stream_buffer(std::vector<uint8_t> &&data)
+    explicit stream_buffer(std::vector<uint8_t> &&data) noexcept
         : data_(std::move(data))
     {
     }
@@ -59,7 +59,11 @@ public:
             throw std::runtime_error("Unable to resize stream buffer beyond 2^32");
 
         if (total_length > data_.size())
+        {
+            // \todo when we write a string/vector or buffer we should use insert
+            // instead of doing this + memmove/memcpy
             data_.resize(static_cast<size_type>(total_length));
+        }
     }
 
     /* cover floats and integers
