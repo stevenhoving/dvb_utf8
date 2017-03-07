@@ -74,14 +74,12 @@ struct extended_event
     extended_event(const dvb_utf8::stream_buffer &stream)
     {
         auto item_description_length = stream.read<uint8_t>();
-        if (item_description_length)
-            item_description = dvb_utf8::decode(
-                dvb_utf8::stream_buffer(stream.read_buffer(item_description_length)));
+        item_description = dvb_utf8::decode(
+            dvb_utf8::stream_buffer(stream.read_buffer(item_description_length)));
 
         auto item_length = stream.read<uint8_t>();
-        if (item_length)
-            item = dvb_utf8::decode(
-                dvb_utf8::stream_buffer(stream.read_buffer(item_length)));
+        item = dvb_utf8::decode(
+            dvb_utf8::stream_buffer(stream.read_buffer(item_length)));
 
         printf("extended_event - desc: %s, item: %s\n", item_description.c_str(), item.c_str());
     }
@@ -111,9 +109,8 @@ struct extended_event_descriptor : descriptor
             items.emplace_back(extended_event(stream));
 
         auto text_length = stream.read<uint8_t>();
-        if (text_length)
-            text = dvb_utf8::decode(
-                dvb_utf8::stream_buffer(stream.read_buffer(text_length)));
+        text = dvb_utf8::decode(
+            dvb_utf8::stream_buffer(stream.read_buffer(text_length)));
 
         printf("extended_event_descriptor: %s\n", text.c_str());
     }

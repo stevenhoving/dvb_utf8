@@ -12,14 +12,12 @@ struct short_event_descriptor : descriptor
             | (uint32_t)stream.read<uint8_t>();
 
         auto event_name_length = stream.read<uint8_t>();
-        if (event_name_length)
-            event_name = dvb_utf8::decode(
-                dvb_utf8::stream_buffer(stream.read_buffer(event_name_length)));
+        event_name = dvb_utf8::decode(
+            dvb_utf8::stream_buffer(stream.read_buffer(event_name_length)));
 
         auto text_length = stream.read<uint8_t>();
-        if (text_length)
-            text = dvb_utf8::decode(
-                dvb_utf8::stream_buffer(stream.read_buffer(text_length)));
+        text = dvb_utf8::decode(
+            dvb_utf8::stream_buffer(stream.read_buffer(text_length)));
 
         //printf("event name: %s\n", event_name.c_str());
         //printf("event text: %s\n", text.c_str());
