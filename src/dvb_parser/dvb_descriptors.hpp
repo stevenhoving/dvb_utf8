@@ -3,15 +3,13 @@
 
 #include "descriptors/descriptors.hpp"
 
-
-
-
 struct country_availability_descriptor : descriptor
 {
     country_availability_descriptor(const dvb_utf8::stream_buffer &stream)
         : descriptor(stream)
     {
         country_availability_flag = stream.read<uint8_t>();
+        country_code_list.reserve(stream.range_size() / 3);
         while (!stream.range_eos())
         {
             uint32_t country_code =
