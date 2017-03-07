@@ -27,3 +27,13 @@
 *.exe
 *.out
 *.app
+
+# Directories we don't need
+test/data
+dep
+
+# visual studio files
+*.suo
+*.VC.*
+Debug
+Release
