@@ -10,6 +10,9 @@ struct from_utf8
 {
     std::vector<uint8_t> operator()(const std::string &text) const
     {
+        if (text.empty())
+            return std::vector<uint8_t>();
+
         std::vector<uint8_t> result;
         for (auto i = 0u; i < text.size();)
         {
@@ -19,10 +22,10 @@ struct from_utf8
             auto p = (const unsigned char*)&text[i];
             auto left = text.size() - i;
             auto codepoint = ucs4_t();
-            int converted_right = OutputConverter()(p, left, codepoint);
-            if (converted_right > 0)
+            int converted_right_count = OutputConverter()(p, left, codepoint);
+            if (converted_right_count > 0)
             {
-                i += converted_right;
+                i += converted_right_count;
             }
             else
             {
@@ -33,9 +36,9 @@ struct from_utf8
             // second, convert from unicode to <encoding X>
             unsigned char temp[8]; // could any converter generate a encoding bigger than 8?
 
-            auto converted_left = InputConverter()(temp, codepoint, converted_right);
-            if (converted_left > 0 && converted_left < sizeof(temp))
-                result.insert(result.end(), &temp[0], &temp[converted_left]);
+            auto converted_left_count = InputConverter()(temp, codepoint, converted_right_count);
+            if (converted_left_count > 0 && converted_left_count < sizeof(temp))
+                result.insert(result.end(), &temp[0], &temp[converted_left_count]);
         }
         return result;
     }
@@ -46,6 +49,9 @@ struct to_utf8
 {
     std::string operator()(stream_buffer &stream) const
     {
+        if (stream.empty())
+            return "";
+
         auto src = &stream.data()[stream.tell()];
         auto len = stream.size() - stream.tell();
         if (stream.has_range())
