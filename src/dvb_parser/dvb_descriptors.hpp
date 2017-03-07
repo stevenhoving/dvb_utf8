@@ -3,34 +3,7 @@
 
 #include "descriptors/descriptors.hpp"
 
-struct short_event_descriptor : descriptor
-{
-    short_event_descriptor(const dvb_utf8::stream_buffer &stream)
-        : descriptor(stream)
-    {
-        iso_639_language_code =
-              (uint32_t)stream.read<uint8_t>() << 16
-            | (uint32_t)stream.read<uint8_t>() << 8
-            | (uint32_t)stream.read<uint8_t>();
 
-        auto event_name_length = stream.read<uint8_t>();
-        if (event_name_length)
-            event_name = dvb_utf8::decode(
-                dvb_utf8::stream_buffer(stream.read_buffer(event_name_length)));
-
-        auto text_length = stream.read<uint8_t>();
-        if (text_length)
-            text = dvb_utf8::decode(
-                dvb_utf8::stream_buffer(stream.read_buffer(text_length)));
-
-        //printf("event name: %s\n", event_name.c_str());
-        //printf("event text: %s\n", text.c_str());
-    }
-
-    uint32_t iso_639_language_code;
-    std::string event_name;
-    std::string text;
-};
 
 struct related_content_descriptor : descriptor
 {
