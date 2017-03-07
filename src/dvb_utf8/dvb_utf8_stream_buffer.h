@@ -76,7 +76,7 @@ public:
         if (sizeof(T) + index_ > data_.size())
             throw std::runtime_error("Unable to read beyond the buffer size");
 
-        //auto result = static_cast<const T*>(&data_[index_]);
+        // \todo fix cast
         auto result = (const T*)(&data_[index_]);
         index_ += sizeof(T);
         return *result;
@@ -88,13 +88,17 @@ public:
         if (sizeof(T) + index_ > data_.size())
             throw std::runtime_error("Unable to peek beyond the buffer size");
 
+        // \todo fix cast
         return *(const T*)(&data_[index_]);
     }
 
     // \todo check for length limits... and fix unsigned / signed undefined behavior.
     std::vector<uint8_t> read_buffer(const int length) const
     {
-        if ((uint64_t)length + index_ > data_.size())
+        if (length <=0)
+            return std::vector<uint8_t>();
+
+        if (static_cast<uint64_t>(length + index_) > data_.size())
             throw std::runtime_error("Unable to read buffer beyond the buffer size");
 
         auto result = std::vector<uint8_t>(
