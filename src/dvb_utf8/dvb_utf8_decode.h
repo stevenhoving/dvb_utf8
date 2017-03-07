@@ -225,6 +225,8 @@ std::string deserialize_string(stream_buffer &data, character_encoding encoding)
 static
 std::string decode(stream_buffer &data)
 {
+    if (data.empty())
+        return "";
     auto encoding = deserialize_encoding(data);
     return deserialize_string(data, encoding);
 }
