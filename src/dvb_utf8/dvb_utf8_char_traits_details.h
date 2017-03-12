@@ -47,12 +47,12 @@ struct from_utf8
 template<typename InputConverter, typename OutputConverter>
 struct to_utf8
 {
-    std::string operator()(stream_buffer &stream) const
+    std::string operator()(const stream_buffer &stream) const
     {
         if (stream.empty())
             return "";
 
-        auto src = &stream.data()[stream.tell()];
+        const auto src = &stream.data()[stream.tell()];
         auto len = stream.size() - stream.tell();
         if (stream.has_range())
             len = stream.range_size();
@@ -62,7 +62,7 @@ struct to_utf8
         for (i = 0; i < len;)
         {
             ucs4_t pwc;
-            int converted_left = InputConverter()(&pwc, src + i, len - i);
+            const int converted_left = InputConverter()(&pwc, src + i, len - i);
             if (converted_left > 0)
             {
                 i += converted_left;

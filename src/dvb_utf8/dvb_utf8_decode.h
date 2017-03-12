@@ -39,7 +39,7 @@ character_encoding get_encoding_dvb_0x10(uint16_t identifier)
 }
 
 static
-character_encoding deserialize_encoding(stream_buffer &stream)
+character_encoding deserialize_encoding(const stream_buffer &stream)
 {
     uint8_t character_code_table_id = stream.read<uint8_t>();
 
@@ -165,7 +165,7 @@ character_encoding deserialize_encoding(stream_buffer &stream)
 }
 
 static
-std::string deserialize_string(stream_buffer &data, character_encoding encoding)
+std::string deserialize_string(const stream_buffer &data, const character_encoding encoding)
 {
     switch (encoding)
     {
@@ -223,11 +223,11 @@ std::string deserialize_string(stream_buffer &data, character_encoding encoding)
 
 // \todo add table overwrite option (quirk's of the system)
 static
-std::string decode(stream_buffer &data)
+std::string decode(const stream_buffer &data)
 {
     if (data.empty())
         return "";
-    auto encoding = deserialize_encoding(data);
+    const auto encoding = deserialize_encoding(data);
     return deserialize_string(data, encoding);
 }
 
