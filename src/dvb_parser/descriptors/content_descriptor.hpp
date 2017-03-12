@@ -10,7 +10,7 @@ struct content_descriptor_item
 
 struct content_descriptor : descriptor
 {
-    content_descriptor(const dvb_utf8::stream_buffer &stream)
+    explicit content_descriptor(const dvb_utf8::stream_buffer &stream)
         : descriptor(stream)
     {
         items.reserve(stream.range_size() / sizeof(content_descriptor_item));

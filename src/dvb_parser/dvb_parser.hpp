@@ -11,7 +11,7 @@ namespace dvb_parse
 {
 struct short_section
 {
-    short_section(const dvb_utf8::stream_buffer &stream)
+    explicit short_section(const dvb_utf8::stream_buffer &stream)
     {
         tableId = stream.read<uint8_t>();
         auto flags = stream.read<uint8_t>();
@@ -36,7 +36,7 @@ struct short_section
 
 struct long_section : short_section
 {
-    long_section(const dvb_utf8::stream_buffer &stream)
+    explicit long_section(const dvb_utf8::stream_buffer &stream)
         : short_section(stream)
     {
         table_id_extension = stream.read<uint16_t>();
@@ -55,7 +55,7 @@ struct long_section : short_section
 
 struct long_crc_section : long_section
 {
-    long_crc_section(const dvb_utf8::stream_buffer &data)
+    explicit long_crc_section(const dvb_utf8::stream_buffer &data)
         : long_section(data)
         , crc32(0)
     {
@@ -129,7 +129,7 @@ struct descriptor_container
 
 struct event : descriptor_container
 {
-    event(const dvb_utf8::stream_buffer &stream)
+    explicit event(const dvb_utf8::stream_buffer &stream)
     {
         event_id = stream.read<uint16_t>();
         start_time =
@@ -165,7 +165,7 @@ struct event : descriptor_container
 
 struct event_information_section : long_crc_section
 {
-    event_information_section(const dvb_utf8::stream_buffer &stream)
+    explicit event_information_section(const dvb_utf8::stream_buffer &stream)
         : long_crc_section(stream)
     {
         transport_stream_id = stream.read<uint16_t>();
@@ -189,7 +189,7 @@ struct event_information_section : long_crc_section
 
 struct service_description : descriptor_container
 {
-    service_description(const dvb_utf8::stream_buffer &stream)
+    explicit service_description(const dvb_utf8::stream_buffer &stream)
     {
         serviceId = stream.read<uint16_t>();
         auto flags = stream.read<uint8_t>();
@@ -224,7 +224,7 @@ struct service_description : descriptor_container
 
 struct service_description_section : long_crc_section
 {
-    service_description_section(const dvb_utf8::stream_buffer &stream)
+    explicit service_description_section(const dvb_utf8::stream_buffer &stream)
         : long_crc_section(stream)
     {
         original_network_id = stream.read<uint16_t>();
@@ -243,7 +243,7 @@ struct service_description_section : long_crc_section
 
 struct network_information_section : long_crc_section
 {
-    network_information_section(const dvb_utf8::stream_buffer &stream)
+    explicit network_information_section(const dvb_utf8::stream_buffer &stream)
         : long_crc_section(stream)
     {
         read_crc(stream);

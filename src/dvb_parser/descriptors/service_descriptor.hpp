@@ -3,7 +3,7 @@
 
 struct service_descriptor : descriptor
 {
-    service_descriptor(const dvb_utf8::stream_buffer &stream)
+    explicit service_descriptor(const dvb_utf8::stream_buffer &stream)
         : descriptor(stream)
     {
         service_type = stream.read<uint8_t>();

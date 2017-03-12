@@ -3,7 +3,7 @@
 
 struct short_event_descriptor : descriptor
 {
-    short_event_descriptor(const dvb_utf8::stream_buffer &stream)
+    explicit short_event_descriptor(const dvb_utf8::stream_buffer &stream)
         : descriptor(stream)
     {
         iso_639_language_code =

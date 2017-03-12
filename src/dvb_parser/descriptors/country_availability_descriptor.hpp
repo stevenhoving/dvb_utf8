@@ -3,7 +3,7 @@
 
 struct country_availability_descriptor : descriptor
 {
-    country_availability_descriptor(const dvb_utf8::stream_buffer &stream)
+    explicit country_availability_descriptor(const dvb_utf8::stream_buffer &stream)
         : descriptor(stream)
     {
         country_availability_flag = stream.read<uint8_t>();

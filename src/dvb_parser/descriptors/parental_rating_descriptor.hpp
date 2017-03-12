@@ -9,7 +9,7 @@ struct parental_rating
 
 struct parental_rating_descriptor : descriptor
 {
-    parental_rating_descriptor(const dvb_utf8::stream_buffer &stream)
+    explicit parental_rating_descriptor(const dvb_utf8::stream_buffer &stream)
         : descriptor(stream)
     {
         ratings.reserve(stream.range_size() / 4);

@@ -3,7 +3,7 @@
 
 struct extended_event
 {
-    extended_event(const dvb_utf8::stream_buffer &stream)
+    explicit extended_event(const dvb_utf8::stream_buffer &stream)
     {
         auto item_description_length = stream.read<uint8_t>();
         item_description = dvb_utf8::decode(
@@ -22,7 +22,7 @@ struct extended_event
 
 struct extended_event_descriptor : descriptor
 {
-    extended_event_descriptor(const dvb_utf8::stream_buffer &stream)
+    explicit extended_event_descriptor(const dvb_utf8::stream_buffer &stream)
         : descriptor(stream)
     {
         auto temp = stream.read<uint8_t>();

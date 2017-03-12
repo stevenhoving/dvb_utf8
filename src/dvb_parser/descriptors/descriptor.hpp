@@ -3,7 +3,7 @@
 
 struct descriptor
 {
-    descriptor(const dvb_utf8::stream_buffer &stream)
+    explicit descriptor(const dvb_utf8::stream_buffer &stream)
     {
         tag = stream.read<uint8_t>();
         length = stream.read<uint8_t>();

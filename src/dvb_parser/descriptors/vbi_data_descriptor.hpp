@@ -3,7 +3,7 @@
 
 struct vbi_data_line
 {
-    vbi_data_line(const dvb_utf8::stream_buffer &stream)
+    explicit vbi_data_line(const dvb_utf8::stream_buffer &stream)
     {
         auto data = stream.read<uint8_t>();
         field_parity = (data >> 5) & 0x01;
@@ -17,7 +17,7 @@ struct vbi_data_line
 
 struct vbi_data_service
 {
-    vbi_data_service(const dvb_utf8::stream_buffer &stream)
+    explicit vbi_data_service(const dvb_utf8::stream_buffer &stream)
     {
         data_service_id = stream.read<uint8_t>();
         uint8_t data_service_descriptor_length = stream.read<uint8_t>();
@@ -47,7 +47,7 @@ struct vbi_data_service
 
 struct vbi_data_descriptor : descriptor
 {
-    vbi_data_descriptor(const dvb_utf8::stream_buffer &stream)
+    explicit vbi_data_descriptor(const dvb_utf8::stream_buffer &stream)
         : descriptor(stream)
     {
         while (!stream.range_eos())
