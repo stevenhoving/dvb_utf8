@@ -5189,5 +5189,4 @@ struct hufftab memtable[] = {
     {0x7f, 0x80000000, 0x0001, 0x01}	// 2
 };
 
-//#define	MEMTABLE_SIZE	5187
-#define	MEMTABLE_SIZE int(sizeof(memtable) / sizeof(memtable[0]))
+constexpr int MEMTABLE_SIZE = int(sizeof(memtable) / sizeof(memtable[0]));

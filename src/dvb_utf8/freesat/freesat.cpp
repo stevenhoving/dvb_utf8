@@ -17,9 +17,9 @@ struct hufftab {
 
 #include "huffman.t.h"
 
-static constexpr char START = '\0';
-static constexpr char STOP = '\0';
-static constexpr char ESCAPE = '\1';
+constexpr char START = '\0';
+constexpr char STOP = '\0';
+constexpr char ESCAPE = '\1';
 
 #define HUFFMAN_TABLE_SIZE 256
 
