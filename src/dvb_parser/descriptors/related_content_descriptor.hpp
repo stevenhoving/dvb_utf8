@@ -6,11 +6,10 @@
  */
 struct basic_text_descriptor_base : descriptor
 {
-    explicit basic_text_descriptor_base(const dvb_utf8::stream_buffer &stream)
+    explicit basic_text_descriptor_base(const dvb_utf8::stream_span &stream)
         : descriptor(stream)
     {
-        text = dvb_utf8::decode(
-            dvb_utf8::stream_buffer(stream.read_buffer(length)));
+        text = dvb_utf8::decode(payload);
     }
     std::string text;
 };

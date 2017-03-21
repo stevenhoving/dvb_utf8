@@ -47,15 +47,16 @@ int main()
     //auto stream = dvb_utf8::stream_buffer(hex_packet_to_data(hex_packet_pid18_3));
     auto stream = dvb_utf8::stream_buffer(read_test_data("D:/dev/dvb_utf8/pid18.raw"));
 
+
     bool fail = false;
-    while (!stream.eos() && fail == false)
+    while (!payload.eos() && fail == false)
     {
-        auto table_id = stream.peek<uint8_t>();
+        auto table_id = payload.peek<uint8_t>();
 
         if (table_id >= 0x4E && table_id <= 0x6F)
-            auto section = dvb_parse::event_information_section(stream);
-        else if (table_id == 0x42)
-            auto section = dvb_parse::service_description_section(stream);
+            auto section = dvb_parse::event_information_section(payload);
+        else if (table_id == 0x42 || table_id == 0x46)
+            auto section = dvb_parse::service_description_section(payload);
         else
         {
             printf("unsupported table id: 0x%X(%u)\n", table_id, table_id);
@@ -63,7 +64,8 @@ int main()
         }
     }
 
-    if (stream.eos())
+
+    if (payload.eos())
         printf("parsed everything\n");
     else
         printf("parsed incomplete\n");

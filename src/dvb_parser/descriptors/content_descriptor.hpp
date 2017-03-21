@@ -10,22 +10,21 @@ struct content_descriptor_item
 
 struct content_descriptor : descriptor
 {
-    explicit content_descriptor(const dvb_utf8::stream_buffer &stream)
+    explicit content_descriptor(const dvb_utf8::stream_span &stream)
         : descriptor(stream)
     {
-        items.reserve(stream.range_size() / sizeof(content_descriptor_item));
-        while (!stream.range_eos())
+        items.reserve(payload.size() / sizeof(content_descriptor_item));
+        while (!payload.eos())
         {
-            uint8_t content_nibble = stream.read<uint8_t>();
-            uint8_t user_byte = stream.read<uint8_t>();
+            uint8_t content_nibble = payload.read<uint8_t>();
+            uint8_t user_byte = payload.read<uint8_t>();
 
-            items.emplace_back(content_descriptor_item{
+            items.emplace_back(content_descriptor_item {
                 static_cast<uint8_t>((content_nibble & 0xF0) >> 4),
                 static_cast<uint8_t>(content_nibble & 0x0F),
                 user_byte
             });
         }
-        stream.range_mark_end();
     }
     std::vector<content_descriptor_item> items;
 };

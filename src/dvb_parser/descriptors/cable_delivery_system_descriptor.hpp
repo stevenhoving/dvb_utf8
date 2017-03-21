@@ -3,13 +3,13 @@
 
 struct cable_delivery_system_descriptor : descriptor
 {
-    explicit cable_delivery_system_descriptor(const dvb_utf8::stream_buffer &stream)
+    explicit cable_delivery_system_descriptor(const dvb_utf8::stream_span &stream)
         : descriptor(stream)
     {
-        frequency = stream.read<uint32_t>();
-        fec_outer = stream.read<uint16_t>(); // \note only the lower 4 bits
-        modulation = stream.read<uint8_t>();
-        uint32_t temp = stream.read<uint32_t>();
+        frequency = payload.read<uint32_t>();
+        fec_outer = payload.read<uint16_t>(); // \note only the lower 4 bits
+        modulation = payload.read<uint8_t>();
+        uint32_t temp = payload.read<uint32_t>();
         symbol_rate = temp >> 4;
         fec_inner = temp & 0xF;
     }

@@ -10,7 +10,7 @@
 
 namespace dvb_utf8
 {
-static inline
+inline
 void unicode_to_utf8(const ucs4_t c, std::string &dst)
 {
     if (c < 0x80)
@@ -44,7 +44,7 @@ void unicode_to_utf8(const ucs4_t c, std::string &dst)
 static inline
 int utf8_to_unicode(const unsigned char *src, const int src_len, ucs4_t &dst)
 {
-    unsigned char c = src[0];
+    const unsigned char c = src[0];
 
     if (c < 0x80)
     {

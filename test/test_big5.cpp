@@ -13,7 +13,7 @@ TEST(test_big5, test_big5_decode)
         0xB4, 0xFA, 0xB8, 0xD5
     };
 
-    auto decoded_text = dvb_utf8::decode(stream_buffer(data));
+    auto decoded_text = dvb_utf8::decode(stream_span(&data[0], &data[data.size()]));
     EXPECT_FALSE(decoded_text.empty());
 }
 

@@ -39,7 +39,7 @@ character_encoding get_encoding_dvb_0x10(uint16_t identifier)
 }
 
 static
-character_encoding deserialize_encoding(const stream_buffer &stream)
+character_encoding deserialize_encoding(const stream_span &stream)
 {
     uint8_t character_code_table_id = stream.read<uint8_t>();
 
@@ -153,6 +153,7 @@ character_encoding deserialize_encoding(const stream_buffer &stream)
             */
         case 0x1F: { // Described by encoding_type_id
             auto encoding_type_id = stream.read<uint8_t>();
+            (void)encoding_type_id; // \note disable compiler warning for now
             //uint8_t encoding_type_id = data[index++]; // \todo shizzle found in 'TS 101 162' (what ever that means).
 
             // \todo until we implemented the freeset huffman decoding we mark
@@ -165,7 +166,7 @@ character_encoding deserialize_encoding(const stream_buffer &stream)
 }
 
 static
-std::string deserialize_string(const stream_buffer &data, const character_encoding encoding)
+std::string deserialize_string(const stream_span &data, const character_encoding encoding)
 {
     switch (encoding)
     {
@@ -223,7 +224,7 @@ std::string deserialize_string(const stream_buffer &data, const character_encodi
 
 // \todo add table overwrite option (quirk's of the system)
 static
-std::string decode(const stream_buffer &data)
+std::string decode(const stream_span &data)
 {
     if (data.empty())
         return "";

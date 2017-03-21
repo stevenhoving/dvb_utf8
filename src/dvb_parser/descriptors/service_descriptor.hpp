@@ -3,19 +3,19 @@
 
 struct service_descriptor : descriptor
 {
-    explicit service_descriptor(const dvb_utf8::stream_buffer &stream)
+    explicit service_descriptor(const dvb_utf8::stream_span &stream)
         : descriptor(stream)
     {
-        service_type = stream.read<uint8_t>();
-        uint8_t service_provider_name_length = stream.read<uint8_t>();
+        service_type = payload.read<uint8_t>();
+        uint8_t service_provider_name_length = payload.read<uint8_t>();
 
         service_provider_name = dvb_utf8::decode(
-            dvb_utf8::stream_buffer(stream.read_buffer(service_provider_name_length)));
+            payload.read_buffer(service_provider_name_length));
 
-        uint8_t service_name_length = stream.read<uint8_t>();
+        uint8_t service_name_length = payload.read<uint8_t>();
 
         service_name = dvb_utf8::decode(
-            dvb_utf8::stream_buffer(stream.read_buffer(service_name_length)));
+            payload.read_buffer(service_name_length));
 
         printf("service_descriptor - provider name: %s, name: %s\n",
             service_provider_name.c_str(),

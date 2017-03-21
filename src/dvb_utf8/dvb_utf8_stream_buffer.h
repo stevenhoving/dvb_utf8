@@ -7,6 +7,8 @@
 #include <limits>
 #include <stdexcept>
 
+#include "dvb_utf8_stream_span.h"
+
 namespace dvb_utf8
 {
 

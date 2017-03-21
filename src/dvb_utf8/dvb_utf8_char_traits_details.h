@@ -47,18 +47,19 @@ struct from_utf8
 template<typename InputConverter, typename OutputConverter>
 struct to_utf8
 {
-    std::string operator()(const stream_buffer &stream) const
+    std::string operator()(const stream_span &stream) const
     {
         if (stream.empty())
             return "";
 
         const auto src = &stream.data()[stream.tell()];
-        auto len = stream.size() - stream.tell();
-        if (stream.has_range())
-            len = stream.range_size();
+        const auto len = stream.size() - stream.tell();
+        //if (stream.has_range())
+            //len = stream.range_size();
 
         std::string result;
-        std::size_t i;
+        result.reserve(len);
+        std::ptrdiff_t i;
         for (i = 0; i < len;)
         {
             ucs4_t pwc;
@@ -69,8 +70,8 @@ struct to_utf8
             }
             else
             {
+                stream.seek(len - i, SEEK_CUR);
                 throw std::runtime_error("to_utf8, invalid data");
-                ++i;
             }
             OutputConverter()(pwc, result);
         }

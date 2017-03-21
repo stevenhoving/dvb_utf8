@@ -9,22 +9,21 @@ struct parental_rating
 
 struct parental_rating_descriptor : descriptor
 {
-    explicit parental_rating_descriptor(const dvb_utf8::stream_buffer &stream)
+    explicit parental_rating_descriptor(const dvb_utf8::stream_span &stream)
         : descriptor(stream)
     {
-        ratings.reserve(stream.range_size() / 4);
-        while (!stream.range_eos())
+        ratings.reserve(payload.size() / 4);
+        while (!payload.eos())
         {
             uint32_t country_code =
-                  (uint32_t)stream.read<uint8_t>() << 16
-                | (uint32_t)stream.read<uint8_t>() << 8
-                | (uint32_t)stream.read<uint8_t>();
+                  (uint32_t)payload.read<uint8_t>() << 16
+                | (uint32_t)payload.read<uint8_t>() << 8
+                | (uint32_t)payload.read<uint8_t>();
 
-            uint8_t rating = stream.read<uint8_t>();
+            uint8_t rating = payload.read<uint8_t>();
 
             ratings.emplace_back(parental_rating{ country_code , rating });
         }
-        stream.range_mark_end();
     }
 
     std::vector<parental_rating> ratings;

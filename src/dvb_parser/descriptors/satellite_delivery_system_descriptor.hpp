@@ -6,13 +6,13 @@
  */
 struct satellite_delivery_system_descriptor : descriptor
 {
-    explicit satellite_delivery_system_descriptor(const dvb_utf8::stream_buffer &stream)
+    explicit satellite_delivery_system_descriptor(const dvb_utf8::stream_span &stream)
         : descriptor(stream)
     {
-        frequency = stream.read<uint32_t>();
-        orbital_position = stream.read<uint16_t>();
-        flags = stream.read<uint8_t>();
-        uint32_t temp = stream.read<uint32_t>();
+        frequency = payload.read<uint32_t>();
+        orbital_position = payload.read<uint16_t>();
+        flags = payload.read<uint8_t>();
+        uint32_t temp = payload.read<uint32_t>();
         fec_inner = temp & 0xF;
         symbol_rate = temp >> 4;
     }
