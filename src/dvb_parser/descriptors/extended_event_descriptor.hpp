@@ -13,7 +13,7 @@ struct extended_event
         item = dvb_utf8::decode(
             stream.read_buffer(item_length));
 
-        printf("extended_event - desc: %s, item: %s\n", item_description.c_str(), item.c_str());
+        DVB_PARSER_DBG("extended_event - desc: %s, item: %s\n", item_description.c_str(), item.c_str());
     }
 
     std::string item_description;

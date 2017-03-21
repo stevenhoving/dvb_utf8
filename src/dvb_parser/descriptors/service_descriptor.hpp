@@ -17,7 +17,7 @@ struct service_descriptor : descriptor
         service_name = dvb_utf8::decode(
             payload.read_buffer(service_name_length));
 
-        printf("service_descriptor - provider name: %s, name: %s\n",
+        DVB_PARSER_DBG("service_descriptor - provider name: %s, name: %s\n",
             service_provider_name.c_str(),
             service_name.c_str()
         );

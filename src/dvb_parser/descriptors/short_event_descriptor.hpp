@@ -19,8 +19,8 @@ struct short_event_descriptor : descriptor
         text = dvb_utf8::decode(
             payload.read_buffer(text_length));
 
-        //printf("event name: %s\n", event_name.c_str());
-        //printf("event text: %s\n", text.c_str());
+        DVB_PARSER_DBG("event name: %s\n", event_name.c_str());
+        DVB_PARSER_DBG("event text: %s\n", text.c_str());
     }
 
     uint32_t iso_639_language_code;

@@ -23,7 +23,7 @@ struct short_section
         payload = stream.read_buffer(section_length - 4); // excluding the crc32
         crc32 = stream.read<uint32_t>();
 
-        printf("section length: 0x%X (%u)\n", section_length, section_length);
+        DVB_PARSER_DBG("section length: 0x%X (%u)\n", section_length, section_length);
     }
     uint8_t tableId;
     uint8_t section_syntax_indicator;
