@@ -57,6 +57,8 @@ int main()
             auto section = dvb_parse::event_information_section(payload);
         else if (table_id == 0x42 || table_id == 0x46)
             auto section = dvb_parse::service_description_section(payload);
+        else if (table_id == 0x40)
+            auto section = dvb_parse::network_information_section(payload);
         else
         {
             printf("unsupported table id: 0x%X(%u)\n", table_id, table_id);

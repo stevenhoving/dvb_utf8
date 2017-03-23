@@ -147,7 +147,7 @@ public:
     {
         return index_ >= size();
     }
-
+private:
     const uint8_t *begin_ = nullptr;
     const uint8_t *end_ = nullptr;
     mutable size_type index_ = 0;
