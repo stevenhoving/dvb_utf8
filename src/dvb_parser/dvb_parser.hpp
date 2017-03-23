@@ -14,7 +14,7 @@ struct short_section
 {
     explicit short_section(const dvb_utf8::stream_span &stream)
     {
-        tableId = stream.read<uint8_t>();
+        table_id = stream.read<uint8_t>();
         auto flags = stream.read<uint8_t>();
         section_syntax_indicator = (flags >> 7) & 0x01;
         uint16_t section_length = (uint16_t)(flags & 0x0F) << 8 | stream.read<uint8_t>();
@@ -25,7 +25,7 @@ struct short_section
 
         DVB_PARSER_DBG("section length: 0x%X (%u)\n", section_length, section_length);
     }
-    uint8_t tableId;
+    uint8_t table_id;
     uint8_t section_syntax_indicator;
     uint32_t crc32;
 
