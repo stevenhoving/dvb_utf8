@@ -1,7 +1,7 @@
 #ifndef descriptor_hpp__
 #define descriptor_hpp__
 
-#include "dvb_parser_config.h"
+#include "dvb_parser_config.hpp"
 
 #if DVB_PARSER_DEBUG_LOG
 #define DVB_PARSER_DBG(x, ...) do{printf(x, ##__VA_ARGS__);}while(0)
