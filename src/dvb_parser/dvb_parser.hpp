@@ -192,8 +192,7 @@ struct descriptor_container
         case LOGICAL_CHANNEL_DESCRIPTOR: /* 0x83 */ handle_dummy(stream, descriptor_tag); break;
         case HD_SIMULCAST_LOGICAL_CHANNEL_DESCRIPTOR: /* 0x88 */ handle_dummy(stream, descriptor_tag); break;
         default:
-            printf("unimplemented descriptor tag: 0x%X (%u)\n", descriptor_tag, descriptor_tag);
-            __debugbreak();
+            handle_dummy(stream, descriptor_tag); break;
         break;
         }
     }
