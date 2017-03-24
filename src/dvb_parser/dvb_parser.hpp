@@ -68,7 +68,7 @@ struct unknown_descriptor : descriptor
 
 void handle_dummy(const dvb_utf8::stream_span &stream, uint8_t descriptor_tag)
 {
-    stream.seek(SEEK_END, 0); printf("unhandled descriptor: %u (0x%X)\n", descriptor_tag, descriptor_tag);
+    stream.seek(0, SEEK_END); printf("unhandled descriptor: %u (0x%X)\n", descriptor_tag, descriptor_tag);
 }
 
 struct descriptor_container
