@@ -107,7 +107,7 @@ public:
             new_index = index_ + offset;
             break;
         case SEEK_END:
-            new_index = (size() - 1) - offset;
+            new_index = size() - offset;
             break;
         default:
             throw std::runtime_error("Invalid seek origin value");
