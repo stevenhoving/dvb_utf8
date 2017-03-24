@@ -6,6 +6,7 @@
 
 #include "dvb_utf8.h"
 #include "dvb_description_tag.hpp"
+#include "dvb_crc32.hpp"
 #include "descriptors/descriptors.hpp"
 
 namespace dvb_parse
@@ -20,8 +21,19 @@ struct short_section
         uint16_t section_length = (uint16_t)(flags & 0x0F) << 8 | stream.read<uint8_t>();
         section_length &= 0xFFF; // 12 bits
 
-        payload = stream.read_buffer(section_length - 4); // excluding the crc32
+        // \note we do a bit of moving around here because for checking the
+        // crc32 we need the complete section (including table_id, flags and
+        // length).
+        stream.seek(-3, SEEK_CUR); // move the read cursor to the start of the section
+        payload = stream.read_buffer((section_length - 4) + 3); // exclude the crc32 (but include table_id, flags and length)
+        payload.seek(3, SEEK_SET); // move the read cursor to the start of the section payload (skipping over table_id, flags and length)
+
         crc32 = stream.read<uint32_t>();
+
+        if (dvb_validate_crc32(payload, crc32))
+            DVB_PARSER_DBG("payload crc is good\n");
+        else
+            DVB_PARSER_DBG("payload crc is bad\n");
 
         DVB_PARSER_DBG("section length: 0x%X (%u)\n", section_length, section_length);
     }
