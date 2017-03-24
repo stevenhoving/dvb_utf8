@@ -34,6 +34,9 @@ dep
 
 # visual studio files
 *.suo
+*.vspx
 *.VC.*
+*.vs
 Debug
 Release
+packages
