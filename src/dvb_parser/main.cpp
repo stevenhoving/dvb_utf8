@@ -1,7 +1,10 @@
 #include "dvb_parser.hpp"
 #include "dvb_test_data.hpp"
 
+#include "stop_watch.h"
+
 using namespace dvb_parse;
+
 void write_test_data(const std::string &path, std::vector<uint8_t> data)
 {
     FILE * fp = fopen(path.c_str(), "wb");
@@ -41,6 +44,8 @@ int main()
     //auto stream = dvb_utf8::stream_buffer(hex_packet_to_data(hex_packet_pid18_3));
     auto stream = dvb_utf8::stream_buffer(read_test_data("D:/dev/dvb_utf8/pid18.raw"));
 
+    stop_watch stopwatch;
+    stopwatch.time_start();
 
     bool fail = false;
     while (!payload.eos() && fail == false)
@@ -60,6 +65,7 @@ int main()
         }
     }
 
+    printf("parse time: %f\n", stopwatch.time_since());
 
     if (payload.eos())
         printf("parsed everything\n");
