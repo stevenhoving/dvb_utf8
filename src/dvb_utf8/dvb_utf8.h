@@ -12,16 +12,4 @@
 #include "dvb_utf8_utilities.h"
 #include "dvb_utf8_char_traits.h"
 
-#include <string>
-
-namespace dvb_utf8
-{
-
-
-
-
-
-
-} // namespace dvb_utf8
-
 #endif // dvb_utf8_h__
