@@ -7,6 +7,7 @@
 namespace dvb_utf8
 {
 
+static
 void print_hexview(const stream_span &stream)
 {
     auto data = &stream.data()[stream.tell()];
@@ -16,6 +17,7 @@ void print_hexview(const stream_span &stream)
     printf("\n");
 }
 
+static
 void print_stringview(const stream_span &stream)
 {
     auto data = &stream.data()[stream.tell()];
