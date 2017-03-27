@@ -64,7 +64,7 @@ void freesat_table_init()
  *  \retval NULL - Can't decode
  *  \return A decoded string
  */
-std::string freesat_huffman_decode(dvb_utf8::stream_buffer &stream)
+std::string freesat_huffman_decode(dvb_utf8::stream_span &stream)
 {
     std::string uncompressed;
     int uncompressed_len = 30;

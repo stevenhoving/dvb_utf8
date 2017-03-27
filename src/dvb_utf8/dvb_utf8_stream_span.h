@@ -1,6 +1,8 @@
 #ifndef dvb_utf8_stream_span_h__
 #define dvb_utf8_stream_span_h__
 
+#include <vector> // for std::ptrdiff_t
+
 namespace dvb_utf8
 {
 // experiment to work around the buffer extraction + memory alloc in a fancy way

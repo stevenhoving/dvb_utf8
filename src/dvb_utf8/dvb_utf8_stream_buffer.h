@@ -7,8 +7,6 @@
 #include <limits>
 #include <stdexcept>
 
-#include "dvb_utf8_stream_span.h"
-
 namespace dvb_utf8
 {
 
@@ -68,50 +66,6 @@ public:
         }
     }
 
-    /* cover floats and integers
-     * \todo fix incorrect handling of different endianness. As atm the
-     * endianness of the target platform is used.
-     */
-    template<typename T>
-    auto read() const -> std::enable_if_t<std::is_arithmetic<T>::value, T>
-    {
-        if (sizeof(T) + index_ > data_.size())
-            throw std::runtime_error("Unable to read beyond the buffer size");
-
-        // \todo fix cast
-        auto result = (const T*)(&data_[index_]);
-        index_ += sizeof(T);
-        return *result;
-    }
-
-    template<typename T>
-    auto peek() const -> std::enable_if_t<std::is_arithmetic<T>::value, T>
-    {
-        if (sizeof(T) + index_ > data_.size())
-            throw std::runtime_error("Unable to peek beyond the buffer size");
-
-        // \todo fix cast
-        return *(const T*)(&data_[index_]);
-    }
-
-    // \todo check for length limits... and fix unsigned / signed undefined behavior.
-    std::vector<uint8_t> read_buffer(const int length) const
-    {
-        if (length <=0)
-            return std::vector<uint8_t>();
-
-        if (static_cast<uint64_t>(length + index_) > data_.size())
-            throw std::runtime_error("Unable to read buffer beyond the buffer size");
-
-        auto result = std::vector<uint8_t>(
-            &data_[index_],
-            &data_[index_ + length]
-        );
-
-        index_ += length;
-        return result;
-    }
-
     bool empty() const noexcept
     {
         return data_.empty();
@@ -166,67 +120,8 @@ public:
         return data_.size();
     }
 
-    bool eos() const noexcept
-    {
-        // \todo use static cast
-        return (size_type)index_ >= data_.size();
-    }
-
-    auto begin() noexcept
-    {
-        return data_.begin();
-    }
-
-    auto end() noexcept
-    {
-        return data_.end();
-    }
-
-    auto begin() const noexcept
-    {
-        return data_.begin();
-    }
-
-    auto end() const noexcept
-    {
-        return data_.end();
-    }
-
-    bool has_range() const noexcept
-    {
-        return range_begin_ != -1;
-    }
-
-    void range_set(const int32_t length) const noexcept
-    {
-        range_begin_ = index_;
-        range_end_ = index_ + length;
-    }
-
-    void range_mark_end() const
-    {
-        if (index_ != range_end_)
-            throw std::runtime_error("stream buffer 'sub' range not satisfied");
-
-        range_begin_ = -1;
-        range_end_ = -1;
-    }
-
-    bool range_eos() const noexcept
-    {
-        return index_ == range_end_;
-    }
-
-    int range_size() const noexcept
-    {
-        return range_end_ - range_begin_;
-    }
-
     mutable value_type data_ = {};
-    mutable int32_t index_ = 0; // read index
-
-    mutable int32_t range_begin_ = -1;
-    mutable int32_t range_end_ = -1;
+    mutable int32_t index_ = 0; // write index
 };
 
 } // namespace dvb_utf8

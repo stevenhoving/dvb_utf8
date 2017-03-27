@@ -8,7 +8,7 @@
 #include "dvb_utf8_encode.h"
 #endif
 
-#include "dvb_utf8_stream_buffer.h"
+#include "dvb_utf8_stream_span.h"
 #include "dvb_utf8_utilities.h"
 #include "dvb_utf8_char_traits.h"
 
