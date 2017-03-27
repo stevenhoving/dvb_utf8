@@ -36,30 +36,30 @@ std::vector<uint8_t> hex_line_to_data(const std::string &data)
     if (hex_view1[0] == "") hex_view1.erase(hex_view1.begin());
     if (hex_view2[0] == "") hex_view2.erase(hex_view2.begin());
 
-    static int hex_to_nibble[255];
-    hex_to_nibble['0'] = 0;
-    hex_to_nibble['1'] = 1;
-    hex_to_nibble['2'] = 2;
-    hex_to_nibble['3'] = 3;
-    hex_to_nibble['4'] = 4;
-    hex_to_nibble['5'] = 5;
-    hex_to_nibble['6'] = 6;
-    hex_to_nibble['7'] = 7;
-    hex_to_nibble['8'] = 8;
-    hex_to_nibble['9'] = 9;
-    hex_to_nibble['a'] = 0xA;
-    hex_to_nibble['b'] = 0xB;
-    hex_to_nibble['c'] = 0xC;
-    hex_to_nibble['d'] = 0xD;
-    hex_to_nibble['e'] = 0xE;
-    hex_to_nibble['f'] = 0xF;
+    static int hex2nibble[255];
+    hex2nibble[static_cast<int>('0')] = 0;
+    hex2nibble[static_cast<int>('1')] = 1;
+    hex2nibble[static_cast<int>('2')] = 2;
+    hex2nibble[static_cast<int>('3')] = 3;
+    hex2nibble[static_cast<int>('4')] = 4;
+    hex2nibble[static_cast<int>('5')] = 5;
+    hex2nibble[static_cast<int>('6')] = 6;
+    hex2nibble[static_cast<int>('7')] = 7;
+    hex2nibble[static_cast<int>('8')] = 8;
+    hex2nibble[static_cast<int>('9')] = 9;
+    hex2nibble[static_cast<int>('a')] = hex2nibble[static_cast<int>('A')] = 0xA;
+    hex2nibble[static_cast<int>('b')] = hex2nibble[static_cast<int>('B')] = 0xB;
+    hex2nibble[static_cast<int>('c')] = hex2nibble[static_cast<int>('C')] = 0xC;
+    hex2nibble[static_cast<int>('d')] = hex2nibble[static_cast<int>('D')] = 0xD;
+    hex2nibble[static_cast<int>('e')] = hex2nibble[static_cast<int>('E')] = 0xE;
+    hex2nibble[static_cast<int>('f')] = hex2nibble[static_cast<int>('F')] = 0xF;
 
     auto result = std::vector<uint8_t>();
     for (auto itr : hex_view1)
-        result.emplace_back(hex_to_nibble[itr[0]] << 4 | hex_to_nibble[itr[1]]);
+        result.emplace_back(hex2nibble[static_cast<int>(itr[0])] << 4 | hex2nibble[static_cast<int>(itr[1])]);
 
     for (auto itr : hex_view2)
-        result.emplace_back(hex_to_nibble[itr[0]] << 4 | hex_to_nibble[itr[1]]);
+        result.emplace_back(hex2nibble[static_cast<int>(itr[0])] << 4 | hex2nibble[static_cast<int>(itr[1])]);
 
     return result;
 }
