@@ -5,6 +5,7 @@
 
 using namespace dvb_parse;
 
+
 void write_test_data(const std::string &path, std::vector<uint8_t> data)
 {
     FILE * fp = fopen(path.c_str(), "wb");
@@ -41,8 +42,11 @@ std::vector<uint8_t> read_test_data(const std::string &path)
 
 int main()
 {
-    //auto stream = dvb_utf8::stream_buffer(hex_packet_to_data(hex_packet_pid18_3));
+    //auto stream = dvb_utf8::stream_buffer(read_test_data("D:/dev/dvb_utf8/pid16.raw"));
     auto stream = dvb_utf8::stream_buffer(read_test_data("D:/dev/dvb_utf8/pid18.raw"));
+    //auto stream = dvb_utf8::stream_buffer(read_test_data("D:/dev/dvb_utf8/pid17.raw"));
+    //auto stream = dvb_utf8::stream_buffer(read_test_data("D:/dev/dvb_utf8/pid18-2.raw"));
+    auto payload = dvb_utf8::stream_span(stream.data(), &stream.data()[stream.size()]);
 
     stop_watch stopwatch;
     stopwatch.time_start();
