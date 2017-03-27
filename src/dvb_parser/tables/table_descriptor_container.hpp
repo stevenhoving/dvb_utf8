@@ -2,6 +2,7 @@
 #define table_descriptor_container_hpp__
 
 #include "dvb_description_tag.hpp"
+#include <memory>
 
 namespace dvb_parse
 {
