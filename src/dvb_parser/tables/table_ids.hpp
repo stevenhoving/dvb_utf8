@@ -1,6 +1,9 @@
 #ifndef dvb_table_id_hpp__
 #define dvb_table_id_hpp__
 
+namespace dvb_parse
+{
+
 enum class table_ids : uint8_t
 {
     pat = 0x00,
@@ -85,5 +88,7 @@ enum class table_ids : uint8_t
     camt_private_d = 0x8f,
     reserved = 0xff
 };
+
+} // namespace dvb_parse
 
 #endif // dvb_table_id_hpp__

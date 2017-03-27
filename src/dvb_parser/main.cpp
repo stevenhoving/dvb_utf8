@@ -1,7 +1,7 @@
 #include "dvb_parser.hpp"
-#include "dvb_table_id.hpp"
 #include "dvb_test_data.hpp"
 
+using namespace dvb_parse;
 void write_test_data(const std::string &path, std::vector<uint8_t> data)
 {
     FILE * fp = fopen(path.c_str(), "wb");
