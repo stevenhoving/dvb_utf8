@@ -51,13 +51,13 @@ int main()
     bool fail = false;
     while (!payload.eos() && fail == false)
     {
-        auto table_id = payload.peek<uint8_t>();
+        auto table_id = static_cast<table_ids>(payload.peek<uint8_t>());
 
-        if (table_id >= 0x4E && table_id <= 0x6F)
+        if (table_id >= table_ids::eit_actual && table_id <= table_ids::eit_other_sched_f)
             auto section = dvb_parse::event_information_section(payload);
-        else if (table_id == 0x42 || table_id == 0x46)
+        else if (table_id == table_ids::sdt_actual || table_id == table_ids::sdt_other)
             auto section = dvb_parse::service_description_section(payload);
-        else if (table_id == 0x40)
+        else if (table_id == table_ids::nit_actual || table_id == table_ids::nit_other)
             auto section = dvb_parse::network_information_section(payload);
         else
         {
