@@ -53,9 +53,6 @@ struct network_information_section : long_section, descriptor_container
         uint8_t temp = payload.read<uint8_t>();
         uint32_t network_descriptors_length = (temp & 0x0F) << 8 | payload.read<uint8_t>();
         auto descriptor_stream = payload.read_buffer(network_descriptors_length);
-        print_hexview(descriptor_stream);
-        print_stringview(descriptor_stream);
-
         while (!descriptor_stream.eos())
             read_descriptor(descriptor_stream);
 
