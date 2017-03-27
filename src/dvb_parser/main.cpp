@@ -36,12 +36,6 @@ std::vector<uint8_t> read_test_data(const std::string &path)
     return result;
 }
 
-void print_hexview(const std::vector<uint8_t> &data)
-{
-    for (size_t i = 0; i < data.size(); ++i)
-        printf("%02X ", data[i]);
-}
-
 int main()
 {
     //auto stream = dvb_utf8::stream_buffer(hex_packet_to_data(hex_packet_pid18_3));
