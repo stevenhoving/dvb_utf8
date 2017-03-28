@@ -72,7 +72,7 @@ std::string freesat_huffman_decode(dvb_utf8::stream_span &stream)
     uint8_t tableid = stream.read<uint8_t>();
     if (tableid != 1 && tableid != 2) {
         // should return error... I guess
-        printf("error, invalid freesat huffman tableid\n");
+        DVB_DBG("error, invalid freesat huffman tableid\n");
         return "";
     }
 
@@ -157,7 +157,7 @@ std::string freesat_huffman_decode(dvb_utf8::stream_span &stream)
         }
         else
         {
-            printf("Missing table %d entry: <%s>\n", tableid + 1, uncompressed.c_str());
+            DVB_DBG("Missing table %d entry: <%s>\n", tableid + 1, uncompressed.c_str());
             // Entry missing in table.
 
             // \todo error situation, is skipping over the bytes we have parsed the correct thing todo?

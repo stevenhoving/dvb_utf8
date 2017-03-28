@@ -1,6 +1,7 @@
 #ifndef FREESAT_H
 #define FREESAT_H
 
+#include "dvb_utf8_config.hpp"
 #include "dvb_utf8_stream_span.hpp"
 #include <string>
 

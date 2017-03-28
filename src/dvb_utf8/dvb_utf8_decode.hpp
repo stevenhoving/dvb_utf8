@@ -29,11 +29,11 @@ character_encoding get_encoding_dvb_0x10(uint16_t identifier)
     case 0x0E: return character_encoding::iso_8859_14;
     case 0x0F: return character_encoding::iso_8859_15;
     case 0x0C:
-        printf("warning, ISO8859-12 unsupported\n");
+        DVB_DBG("warning, ISO8859-12 unsupported\n");
         return character_encoding::invalid;
     case 0x00: // reserved
     default:
-        printf("warning, invalid ISO8859 encoding identifier\n");
+        DVB_DBG("warning, invalid ISO8859 encoding identifier\n");
         return character_encoding::invalid;
     }
 }
@@ -97,7 +97,7 @@ character_encoding deserialize_encoding(const stream_span &stream)
         case 0x0D: // reserved
         case 0x0E: // reserved
         case 0x0F: // reserved
-            printf("Panic! Warning! because we are using any of the the reserved stuff\n");
+            DVB_DBG("Panic! Warning! because we are using any of the the reserved stuff\n");
             encoding = character_encoding::invalid;
             break;
             /**
@@ -215,7 +215,7 @@ std::string deserialize_string(const stream_span &data, const character_encoding
     case character_encoding::ucs2be:
         return ucs2be::to_utf8()(data);
     default:
-        printf("warning, invalid or unsupported encoding type\n");
+        DVB_DBG("warning, invalid or unsupported encoding type\n");
         break;
     }
 

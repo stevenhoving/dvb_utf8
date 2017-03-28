@@ -22,7 +22,7 @@ public:
     {
         // \note debugging check... in production mode this check is not needed.
         if (begin_ != nullptr && end_ != nullptr && index_ != size())
-            printf("Warning, stream_span was not completely parsed\n");
+            DVB_DBG("Warning, stream_span was not completely parsed\n");
     }
 
     stream_span(stream_span &&other) noexcept

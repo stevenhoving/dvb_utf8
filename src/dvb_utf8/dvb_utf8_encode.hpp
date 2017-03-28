@@ -30,7 +30,7 @@ uint8_t get_dvb_0x10_encoding_identifier(character_encoding encoding)
     case character_encoding::iso_8859_14: return 0x0E;
     case character_encoding::iso_8859_15: return 0x0F;
     default:
-        printf("warning, invalid ISO8859 encoding identifier\n");
+        DVB_DBG("warning, invalid ISO8859 encoding identifier\n");
         return 0x00; // \todo fix invalid... throw or something...
     }
 }
@@ -133,7 +133,7 @@ void serialize_encoding(stream_buffer &stream, character_encoding encoding)
         stream.write(token);
         break;
     default:
-        printf("warning, attempting to write unsupported encoding token type\n");
+        DVB_DBG("warning, attempting to write unsupported encoding token type\n");
         break;
     }
 };
@@ -210,7 +210,7 @@ void serialize_string(stream_buffer &stream, const std::string &text, character_
         stream.write(ucs2be::from_utf8()(text));
         break;
     default:
-        printf("warning, attempting to write unsupported encoding type\n");
+        DVB_DBG("warning, attempting to write unsupported encoding type\n");
         break;
     }
 }
