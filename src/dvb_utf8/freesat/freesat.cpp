@@ -167,3 +167,52 @@ std::string freesat_huffman_decode(const dvb_utf8::stream_span &stream)
     stream.seek(byte, SEEK_CUR);
     return uncompressed;
 }
+
+dvb_utf8::stream_buffer freesat_huffman_encode(const std::string &text)
+{
+    freesat_table_init();   /**< Load the tables if necessary */
+
+    int tableid = 0;
+    char lastch = 0;
+    int found;
+    uint32_t value = 0;
+    int bits = 0;
+    dvb_utf8::stream_buffer result;
+    for (auto itr : text)
+    {
+        found = 0;
+        for (int i = 0; i < table_size[tableid][lastch]; ++i)
+        {
+            auto &node = tables[tableid][lastch][i];
+            if (node.next == itr)
+            {
+                value = value << node.bits;
+                value |= (node.value >> (32 - node.bits));
+                bits += node.bits;
+                found = 1;
+                lastch = itr;
+                break;
+            }
+        }
+        if (!found)
+            __debugbreak();
+
+        while (bits >= 8)
+        {
+            int shift = bits - 8;
+            uint8_t byte = (value >> shift) & 0xFF;
+
+            result.write(byte);
+            bits -= 8;
+        }
+    }
+
+    if (bits > 0)
+    {
+        int shift = 8 - bits;
+        uint8_t byte = (value << shift) & 0xFF;
+
+        result.write(byte);
+    }
+    return result;
+}
