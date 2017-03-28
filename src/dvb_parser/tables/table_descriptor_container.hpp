@@ -120,7 +120,7 @@ struct descriptor_container
         case LOGICAL_CHANNEL_DESCRIPTOR: /* 0x83 */ handle_unhandled_descriptor(stream, descriptor_tag); break;
         case HD_SIMULCAST_LOGICAL_CHANNEL_DESCRIPTOR: /* 0x88 */ handle_unhandled_descriptor(stream, descriptor_tag); break;
         default:
-            handle_unhandled_descriptor(stream, descriptor_tag); break;
+            handle_unhandled_descriptor(stream, descriptor_tag);
         break;
         }
     }
