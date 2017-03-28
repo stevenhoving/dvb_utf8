@@ -111,8 +111,6 @@
 #include "transport_protocol_descriptor.hpp"
 #include "transport_stream_descriptor.hpp"
 #include "tva_id_descriptor.hpp"
-#include "type_descriptor.hpp"
-#include "unknown_descriptor.hpp"
 #include "vbi_data_descriptor.hpp"
 #include "vbi_teletext_descriptor.hpp"
 #include "video_stream_descriptor.hpp"

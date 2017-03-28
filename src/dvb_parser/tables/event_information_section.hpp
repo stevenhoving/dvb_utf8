@@ -10,13 +10,13 @@ struct event : descriptor_container
     {
         event_id = stream.read<uint16_t>();
         start_time =
-            (uint64_t)stream.read<uint8_t>() << 32
+              (uint64_t)stream.read<uint8_t>() << 32
             | (uint64_t)stream.read<uint8_t>() << 24
             | (uint64_t)stream.read<uint8_t>() << 16
             | (uint64_t)stream.read<uint8_t>() << 8
             | (uint64_t)stream.read<uint8_t>();
         duration =
-            (uint32_t)stream.read<uint8_t>() << 16
+              (uint32_t)stream.read<uint8_t>() << 16
             | (uint32_t)stream.read<uint8_t>() << 8
             | (uint32_t)stream.read<uint8_t>();
 
