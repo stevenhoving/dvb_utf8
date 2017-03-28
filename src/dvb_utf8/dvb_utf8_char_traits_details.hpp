@@ -56,8 +56,6 @@ struct to_utf8
 
         const auto src = &stream.data()[stream.tell()];
         const auto len = stream.size() - stream.tell();
-        //if (stream.has_range())
-            //len = stream.range_size();
 
         std::string result;
         result.reserve(len);
@@ -90,7 +88,7 @@ struct to_utf8
     }
 };
 
-} // namespace factory
+} // namespace converter_factory
 } // namespace dvb_utf8
 
 #endif // dvb_utf8_char_traits_details_h__
