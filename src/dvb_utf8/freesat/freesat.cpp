@@ -23,7 +23,7 @@ constexpr char ESCAPE = '\1';
 
 #define HUFFMAN_TABLE_SIZE 256
 
-static std::array<hufftab *, HUFFMAN_TABLE_SIZE> tables[2];
+static std::array<const hufftab *, HUFFMAN_TABLE_SIZE> tables[2];
 static std::array<int, HUFFMAN_TABLE_SIZE> table_size[2];
 
 void freesat_table_init()
@@ -80,12 +80,13 @@ std::string freesat_huffman_decode(const dvb_utf8::stream_span &stream)
     auto src = &stream.data()[stream.tell()];
 
     uncompressed.resize(uncompressed_len + 1);
-    unsigned value = 0, byte = 2, bit = 0;
+    unsigned int value = 0, byte = 0, bit = 0;
     int p = 0;
     int lastch = START;
 
-    while (byte < 6 && byte < size) {
-        value |= src[byte] << ((5 - byte) * 8);
+    // 'stream' the first 4 bytes into a 32 bit int
+    while (byte < 4 && byte < size) {
+        value |= src[byte] << ((3 - byte) * 8);
         byte++;
     }
 
@@ -113,9 +114,8 @@ std::string freesat_huffman_decode(const dvb_utf8::stream_span &stream)
         {
             int j;
             for (j = 0; j < table_size[tableid][lastch]; j++) {
-                unsigned mask = 0, maskbit = 0x80000000;
-                short kk;
-                for (kk = 0; kk < tables[tableid][lastch][j].bits; kk++) {
+                unsigned int mask = 0, maskbit = 0x80000000;
+                for (short kk = 0; kk < tables[tableid][lastch][j].bits; kk++) {
                     mask |= maskbit;
                     maskbit >>= 1;
                 }

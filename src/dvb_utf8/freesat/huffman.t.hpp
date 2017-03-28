@@ -1,4 +1,4 @@
-struct hufftab memtable[] = {
+const struct hufftab memtable[] = {
     /* char from; unsigned int value; short bits; char next; */
     {0x00, 0x00000000, 0x0002, 0x54},	// 51
     {0x00, 0x40000000, 0x0003, 0x42},	// 51
