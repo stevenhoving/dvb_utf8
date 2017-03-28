@@ -117,29 +117,29 @@ struct linkage_descriptor : descriptor
     explicit linkage_descriptor(const dvb_utf8::stream_span &stream)
         : descriptor(stream)
     {
-        uint16_t transport_stream_id = payload.read<uint16_t>();
-        uint16_t original_network_id = payload.read<uint16_t>();
-        uint16_t service_id = payload.read<uint16_t>();
-        uint8_t linkage_type = payload.read<uint8_t>();
+        transport_stream_id = payload.read<uint16_t>();
+        original_network_id = payload.read<uint16_t>();
+        service_id = payload.read<uint16_t>();
+        linkage_type = payload.read<uint8_t>();
         if (linkage_type == 0x80)
-        {
-            // parse mobile_hand_over_info
-            auto mobile_hand_over_info_ = mobile_hand_over_info(payload);
-        }
+            mobile_hand_over_info_ = std::make_unique<mobile_hand_over_info>(payload);
         else if (linkage_type == 0x0D)
-        {
-             // parse event_linkage_info
-            auto event_linkage_info_ = event_linkage_info(payload);
-        }
+            event_linkage_info_ = std::make_unique<event_linkage_info>(payload);
         else if (linkage_type >= 0x0E && linkage_type <= 0x1F)
-        {
-            // parse extended_event_linkage_info
-            auto extended_event_linkage_info_ = extended_event_linkage_info(payload);
-        }
+            extended_event_linkage_info_ = std::make_unique<extended_event_linkage_info>(payload);
 
         private_data = payload.read_buffer(payload.size() - payload.tell());
     }
+    uint16_t transport_stream_id;
+    uint16_t original_network_id;
+    uint16_t service_id;
+    uint8_t linkage_type;
 
+    std::unique_ptr<mobile_hand_over_info> mobile_hand_over_info_ = nullptr;
+    std::unique_ptr<event_linkage_info> event_linkage_info_ = nullptr;
+    std::unique_ptr<extended_event_linkage_info> extended_event_linkage_info_ = nullptr;
+
+    /* \note dangerous because we do not own this memory */
     dvb_utf8::stream_span private_data;
 };
 

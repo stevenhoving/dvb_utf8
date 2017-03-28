@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <cstdint>
+#include <memory>
 
 #include "descriptor.hpp"
 #include "descriptor_container.hpp"
