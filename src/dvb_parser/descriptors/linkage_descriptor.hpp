@@ -47,8 +47,8 @@ struct event_linkage_info
     {
         target_event_id = stream.read<uint16_t>();
         uint8_t temp = stream.read<uint8_t>();
-        target_listed   = (target_listed >> 7) & 0x01;
-        event_simulcast = (target_listed >> 6) & 0x01;
+        target_listed   = (temp >> 7) & 0x01;
+        event_simulcast = (temp >> 6) & 0x01;
     }
     uint16_t target_event_id;
     uint8_t target_listed;
