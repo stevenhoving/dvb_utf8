@@ -41,6 +41,7 @@ void unicode_to_utf8(const ucs4_t c, std::string &dst)
     }
 }
 
+#if DVB_UTF8_ENABLE_ENCODE
 static inline
 int utf8_to_unicode(const unsigned char *src, const int src_len, ucs4_t &dst)
 {
@@ -101,6 +102,7 @@ int utf8_to_unicode(const unsigned char *src, const int src_len, ucs4_t &dst)
     else
         return RET_ILSEQ;
 }
+#endif // DVB_UTF8_ENABLE_ENCODE
 
 /************************************************************************/
 /* intermediate converters                                              */
