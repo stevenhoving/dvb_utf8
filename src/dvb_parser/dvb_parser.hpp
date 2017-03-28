@@ -1,7 +1,7 @@
 #ifndef dvb_parser_hpp__
 #define dvb_parser_hpp__
 
-#include "dvb_utf8.h"
+#include "dvb_utf8.hpp"
 #include "descriptors/descriptors.hpp"
 #include "tables/tables.hpp"
 

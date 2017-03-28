@@ -1,9 +1,9 @@
 #ifndef dvb_utf8_decode_h__
 #define dvb_utf8_decode_h__
 
-#include "dvb_utf8_stream_span.h"
-#include "dvb_utf8_char_traits.h"
-#include "dvb_utf8_opcodes.h"
+#include "dvb_utf8_stream_span.hpp"
+#include "dvb_utf8_char_traits.hpp"
+#include "dvb_utf8_opcodes.hpp"
 
 #include <string>
 

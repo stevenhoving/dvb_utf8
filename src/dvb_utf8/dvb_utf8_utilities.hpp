@@ -1,7 +1,7 @@
 #ifndef dvb_utf8_utilities_h__
 #define dvb_utf8_utilities_h__
 
-#include "dvb_utf8_stream_span.h"
+#include "dvb_utf8_stream_span.hpp"
 #include <cstdio>
 
 namespace dvb_utf8

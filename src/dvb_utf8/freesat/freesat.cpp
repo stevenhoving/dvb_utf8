@@ -3,7 +3,7 @@
  * Insert GPL license
  */
 
-#include "freesat.h"
+#include "freesat.hpp"
 #include <cstdio>
 #include <string>
 #include <array>
@@ -15,7 +15,7 @@ struct hufftab {
     char next;
 };
 
-#include "huffman.t.h"
+#include "huffman.t.hpp"
 
 constexpr char START = '\0';
 constexpr char STOP = '\0';

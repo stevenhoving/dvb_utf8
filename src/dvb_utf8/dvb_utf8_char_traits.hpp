@@ -1,8 +1,8 @@
 #ifndef dvb_utf8_char_traits_h__
 #define dvb_utf8_char_traits_h__
 
-#include "dvb_utf8_char_traits_details.h"
-#include "dvb_utf8_stream_span.h"
+#include "dvb_utf8_char_traits_details.hpp"
+#include "dvb_utf8_stream_span.hpp"
 
 #include "libiconv/libiconv.h"
 
