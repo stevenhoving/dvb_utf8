@@ -5,26 +5,27 @@
 * From page 126 (page 126 of the PDF) of the dvb A038 January 2017 spec,
 * section 'A.2 Selection of character table'.
 */
-#define ISO8859_5           0x01    // Latin/Cyrillic
-#define ISO8859_6           0x02    // Latin/Arabic
-#define ISO8859_7           0x03    // Latin/Greek
-#define ISO8859_8           0x04    // Latin/Hebrew
-#define ISO8859_9           0x05    // Latin 5
-#define ISO8859_10          0x06    // Latin 6
-#define ISO8859_11          0x07    // Latin/Thai
-#define ISO8859_12          0x08    // Reserved
-#define ISO8859_13          0x09    // Latin 7
-#define ISO8859_14          0x0A    // Latin 8 (Celtic)
-#define ISO8859_15          0x0B    // Latin 9
-#define ISO8859_xx          0x10    // encoded in next two bytes
-#define UNICODE_ENCODING    0x11    // ISO10646 Basic Multilingual Plane
-#define KSX1001_ENCODING    0x12    // KSX1001 Korean
-#define GB18030_ENCODING    0x13    // ISO10646 Simplified Chinese
-#define BIG5_ENCODING       0x14    // ISO10646 Big5 Traditional Chinese
-#define UTF8_ENCODING       0x15    // ISO10646 Basic Multilingual Plane in
+#define ENC_ID_ISO8859_5    0x01    // Latin/Cyrillic
+#define ENC_ID_ISO8859_6    0x02    // Latin/Arabic
+#define ENC_ID_ISO8859_7    0x03    // Latin/Greek
+#define ENC_ID_ISO8859_8    0x04    // Latin/Hebrew
+#define ENC_ID_ISO8859_9    0x05    // Latin 5
+#define ENC_ID_ISO8859_10   0x06    // Latin 6
+#define ENC_ID_ISO8859_11   0x07    // Latin/Thai
+#define ENC_ID_ISO8859_12   0x08    // Reserved
+#define ENC_ID_ISO8859_13   0x09    // Latin 7
+#define ENC_ID_ISO8859_14   0x0A    // Latin 8 (Celtic)
+#define ENC_ID_ISO8859_15   0x0B    // Latin 9
+#define ENC_ID_ISO8859      0x10    // encoded in next two bytes
+#define ENC_ID_UNICODE      0x11    // ISO10646 Basic Multilingual Plane
+#define ENC_ID_KSX1001      0x12    // KSX1001 Korean
+#define ENC_ID_GB18030      0x13    // ISO10646 Simplified Chinese
+#define ENC_ID_BIG5         0x14    // ISO10646 Big5 Traditional Chinese
+#define ENC_ID_UTF8         0x15    // ISO10646 Basic Multilingual Plane in
                                     // UTF8 encoding
-#define UTF16BE_ENCODING    0x16
-#define UTF16LE_ENCODING    0x17
+#define ENC_ID_UTF16BE      0x16
+#define ENC_ID_UTF16LE      0x17
+#define ENC_ID_FREESAT      0x1F    // Freesat huffman encoding
 
 namespace dvb_utf8
 {
@@ -52,6 +53,7 @@ enum class character_encoding
     utf16be,
     utf16le,
     ksx1001,        // Korean Character Set
+    freesat,
     invalid,
 };
 } // namespace dvb_utf8

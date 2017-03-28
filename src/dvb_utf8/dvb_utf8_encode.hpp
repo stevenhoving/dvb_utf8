@@ -60,77 +60,77 @@ void serialize_encoding(stream_buffer &stream, character_encoding encoding)
         // \note we could make encoding a lot easier by always using the
         // ISO8859_xx token. And on a more personal note, this code is a bit 
         // clumsy.
-        token = ISO8859_xx;
+        token = ENC_ID_ISO8859;
         stream.write(token);
         token = get_dvb_0x10_encoding_identifier(encoding);
         stream.write(token);
         break;
     case character_encoding::iso_8859_5:
-        token = ISO8859_5;
+        token = ENC_ID_ISO8859_5;
         stream.write(token);
         break;
     case character_encoding::iso_8859_6:
-        token = ISO8859_6;
+        token = ENC_ID_ISO8859_6;
         stream.write(token);
         break;
     case character_encoding::iso_8859_7:
-        token = ISO8859_7;
+        token = ENC_ID_ISO8859_7;
         stream.write(token);
         break;
     case character_encoding::iso_8859_8:
-        token = ISO8859_8;
+        token = ENC_ID_ISO8859_8;
         stream.write(token);
         break;
     case character_encoding::iso_8859_9:
-        token = ISO8859_9;
+        token = ENC_ID_ISO8859_9;
         stream.write(token);
         break;
     case character_encoding::iso_8859_10:
-        token = ISO8859_10;
+        token = ENC_ID_ISO8859_10;
         stream.write(token);
         break;
     case character_encoding::iso_8859_11:
-        token = ISO8859_11;
+        token = ENC_ID_ISO8859_11;
         stream.write(token);
         break;
     case character_encoding::iso_8859_13:
-        token = ISO8859_13;
+        token = ENC_ID_ISO8859_13;
         stream.write(token);
         break;
     case character_encoding::iso_8859_14:
-        token = ISO8859_14;
+        token = ENC_ID_ISO8859_14;
         stream.write(token);
         break;
     case character_encoding::iso_8859_15:
-        token = ISO8859_15;
+        token = ENC_ID_ISO8859_15;
         stream.write(token);
         break;
     case character_encoding::ucs2be:
-        token = UNICODE_ENCODING;
+        token = ENC_ID_UNICODE;
         stream.write(token);
         break;
     case character_encoding::gb18030:
-        token = GB18030_ENCODING;
+        token = ENC_ID_GB18030;
         stream.write(token);
         break;
     case character_encoding::big5:
-        token = BIG5_ENCODING;
+        token = ENC_ID_BIG5;
         stream.write(token);
         break;
     case character_encoding::utf8:
-        token = UTF8_ENCODING;
+        token = ENC_ID_UTF8;
         stream.write(token);
         break;
     case character_encoding::utf16be:
-        token = UTF16BE_ENCODING;
+        token = ENC_ID_UTF16BE;
         stream.write(token);
         break;
     case character_encoding::utf16le:
-        token = UTF16LE_ENCODING;
+        token = ENC_ID_UTF16LE;
         stream.write(token);
         break;
     case character_encoding::ksx1001:
-        token = KSX1001_ENCODING;
+        token = ENC_ID_KSX1001;
         stream.write(token);
         break;
     default:

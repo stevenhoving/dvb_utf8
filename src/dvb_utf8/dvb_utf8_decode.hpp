@@ -48,10 +48,10 @@ character_encoding deserialize_encoding(const stream_span &stream)
     /**
     * From page 126 (page 126 of the PDF) of the dvb A038 January 2017 spec:
     *
-    *      "If the first byte of the text field has a value in the range "0x20" to
-    *      "0xFF" then this and all subsequent bytes in the text item are coded
-    *      using the default character coding table (table 00 - Latin alphabet) of
-    *      figure A.1."
+    *      "If the first byte of the text field has a value in the range "0x20"
+    *      to "0xFF" then this and all subsequent bytes in the text item are
+    *      coded using the default character coding table (table 00 - Latin
+    *      alphabet) of figure A.1."
     */
     if (character_code_table_id >= 0x20 && character_code_table_id <= 0xFF)
     {
@@ -62,34 +62,34 @@ character_encoding deserialize_encoding(const stream_span &stream)
     {
         switch (character_code_table_id)
         {
-        case 0x01: // ISO8859-5
+        case ENC_ID_ISO8859_5: // ISO8859-5
             encoding = character_encoding::iso_8859_5;
             break;
-        case 0x02: // ISO8859-6
+        case ENC_ID_ISO8859_6: // ISO8859-6
             encoding = character_encoding::iso_8859_6;
             break;
-        case 0x03: // ISO8859-7
+        case ENC_ID_ISO8859_7: // ISO8859-7
             encoding = character_encoding::iso_8859_7;
             break;
-        case 0x04: // ISO8859-8
+        case ENC_ID_ISO8859_8: // ISO8859-8
             encoding = character_encoding::iso_8859_8;
             break;
-        case 0x05: // ISO8859-9
+        case ENC_ID_ISO8859_9: // ISO8859-9
             encoding = character_encoding::iso_8859_9;
             break;
-        case 0x06: // ISO8859-10
+        case ENC_ID_ISO8859_10: // ISO8859-10
             encoding = character_encoding::iso_8859_10;
             break;
-        case 0x07: // ISO8859-11
+        case ENC_ID_ISO8859_11: // ISO8859-11
             encoding = character_encoding::iso_8859_11;
             break;
-        case 0x09: // ISO8859-13
+        case ENC_ID_ISO8859_13: // ISO8859-13
             encoding = character_encoding::iso_8859_13;
             break;
-        case 0x0A: // ISO8859-14
+        case ENC_ID_ISO8859_14: // ISO8859-14
             encoding = character_encoding::iso_8859_14;
             break;
-        case 0x0B: // ISO8859-15
+        case ENC_ID_ISO8859_15: // ISO8859-15
             encoding = character_encoding::iso_8859_15;
             break;
         case 0x08: // reserved
@@ -97,7 +97,8 @@ character_encoding deserialize_encoding(const stream_span &stream)
         case 0x0D: // reserved
         case 0x0E: // reserved
         case 0x0F: // reserved
-            DVB_DBG("Panic! Warning! because we are using any of the the reserved stuff\n");
+            DVB_DBG("Invalid dvb text field character encoding identifier (%u)\n",
+                character_code_table_id);
             encoding = character_encoding::invalid;
             break;
             /**
@@ -108,30 +109,31 @@ character_encoding deserialize_encoding(const stream_span &stream)
             *      the remaining data of the text field is coded using the character code
             *      table specified in table A.4."
             */
-        case 0x10: { // ISO8859
+        case ENC_ID_ISO8859: { // ISO8859
             uint16_t n = stream.read<uint8_t>() << 8 | stream.read<uint8_t>(); // character code table
             encoding = get_encoding_dvb_0x10(n);
         } break;
-        case 0x11: // ISO10646 (BMP)
+        case ENC_ID_UNICODE: // ISO10646 (BMP)
             encoding = character_encoding::ucs2be;
             break;
-        case 0x12: // KSX1001-2004
-                   // EUC-KR, windows-949
+        case ENC_ID_KSX1001: // KSX1001-2004
+                             // EUC-KR, windows-949
             encoding = character_encoding::ksx1001;
             break;
-        case 0x13: // GB-2312-1980
+        case ENC_ID_GB18030: // GB-2312-1980
+                             // GB-18030
             encoding = character_encoding::gb18030;
             break;
-        case 0x14: // Big5 subset of ISO10646
+        case ENC_ID_BIG5: // Big5 subset of ISO10646
             encoding = character_encoding::big5;
             break;
-        case 0x15: // UTF-8 encoding of ISO10646 (BMP)
+        case ENC_ID_UTF8: // UTF-8 encoding of ISO10646 (BMP)
             encoding = character_encoding::utf8;
             break;
-        case 0x16:
+        case ENC_ID_UTF16BE:
             encoding = character_encoding::utf16be;
             break;
-        case 0x17:
+        case ENC_ID_UTF16LE:
             encoding = character_encoding::utf16le;
             break;
         case 0x18: // reserved
@@ -141,25 +143,22 @@ character_encoding deserialize_encoding(const stream_span &stream)
         case 0x1C: // reserved
         case 0x1D: // reserved
         case 0x1E: // reserved
+        default:
+            DVB_DBG("Invalid dvb text field character encoding identifier (%u)\n",
+                character_code_table_id);
             encoding = character_encoding::invalid;
             break;
-            /**
-            * From page 127 (page 127 of the PDF) of the dvb A038 January 2017 spec:
-            *
-            *     "If the first byte of the text field has value "0x1F" then the following
-            *      byte carries an 8-bit value (uimsbf) containing the encoding_type_id.
-            *      This value indicates the encoding scheme of the string. Allocations of
-            *      the value of this field are found in TS 101 162 [i.1]."
-            */
-        case 0x1F: { // Described by encoding_type_id
-            auto encoding_type_id = stream.read<uint8_t>();
-            (void)encoding_type_id; // \note disable compiler warning for now
-            //uint8_t encoding_type_id = data[index++]; // \todo shizzle found in 'TS 101 162' (what ever that means).
-
-            // \todo until we implemented the freeset huffman decoding we mark
-            // it as invalid.
-            encoding = character_encoding::invalid;
-        } break;
+        /**
+        * From page 127 (page 127 of the PDF) of the dvb A038 January 2017 spec:
+        *
+        *     "If the first byte of the text field has value "0x1F" then the following
+        *      byte carries an 8-bit value (uimsbf) containing the encoding_type_id.
+        *      This value indicates the encoding scheme of the string. Allocations of
+        *      the value of this field are found in TS 101 162 [i.1]."
+        */
+        case ENC_ID_FREESAT:
+            encoding = character_encoding::freesat;
+        break;
         }
     }
     return encoding;
