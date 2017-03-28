@@ -10,7 +10,7 @@
 namespace dvb_utf8
 {
 static
-character_encoding get_encoding_dvb_0x10(uint16_t identifier)
+character_encoding get_encoding_dvb_0x10(const uint16_t identifier)
 {
     switch (identifier)
     {
@@ -224,11 +224,15 @@ std::string deserialize_string(const stream_span &data, const character_encoding
 
 // \todo add table overwrite option (quirk's of the system)
 static
-std::string decode(const stream_span &data)
+std::string decode(const stream_span &data, const character_encoding overwrite = character_encoding::invalid)
 {
     if (data.empty())
         return "";
-    const auto encoding = deserialize_encoding(data);
+
+    auto encoding = deserialize_encoding(data);
+    if (overwrite != character_encoding::invalid)
+        encoding = overwrite;
+
     return deserialize_string(data, encoding);
 }
 
