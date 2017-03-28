@@ -70,8 +70,7 @@ std::string freesat_huffman_decode(const dvb_utf8::stream_span &stream)
 
     uint8_t tableid = stream.read<uint8_t>();
     if (tableid != 1 && tableid != 2) {
-        // should return error... I guess
-        DVB_DBG("error, invalid freesat huffman tableid\n");
+        printf("error, invalid freesat huffman tableid\n");
         return "";
     }
 
