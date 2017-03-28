@@ -6,7 +6,7 @@
 
 #include <cstdint>
 
-std::vector<std::string> string_split(const std::string &data, const std::string needle)
+std::vector<std::string> string_split(const std::string &data, const std::string &needle)
 {
     std::vector<std::string> result;
     size_t pos = std::string::npos;
@@ -24,7 +24,6 @@ std::vector<std::string> string_split(const std::string &data, const std::string
 
 std::vector<uint8_t> hex_line_to_data(const std::string &data)
 {
-    std::vector<std::string> split_result;
     auto first = string_split(data, "   ");
     if (first.size() < 2)
         abort();

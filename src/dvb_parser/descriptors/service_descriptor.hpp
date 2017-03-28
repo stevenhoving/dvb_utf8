@@ -56,7 +56,7 @@ struct service_descriptor : descriptor
         DVB_PARSER_DBG("service_descriptor - provider name: %s, name: %s, service type: 0x%X\n",
             service_provider_name.c_str(),
             service_name.c_str(),
-            service_type
+            (unsigned int)service_type
         );
     }
 

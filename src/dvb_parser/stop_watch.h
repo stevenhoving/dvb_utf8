@@ -33,13 +33,13 @@ public:
         sampled_time_ = _get_time();
     }
 
-    double time_since()
+    double time_since() const
     {
         return _get_time() - sampled_time_;
     }
 
 protected:
-    double _get_time()
+    double _get_time() const
     {
         double  t;
         int64_t t_64;
