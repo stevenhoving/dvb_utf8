@@ -20,7 +20,7 @@
 /*
  * GBK
  */
-
+#if DVB_UTF8_ENABLE_ENCODE
 static int
 ces_gbk_mbtowc (ucs4_t *pwc, const unsigned char *s, size_t n)
 {
@@ -37,6 +37,7 @@ ces_gbk_mbtowc (ucs4_t *pwc, const unsigned char *s, size_t n)
   }
   return RET_ILSEQ;
 }
+
 
 static int
 ces_gbk_wctomb (unsigned char *r, ucs4_t wc, size_t n)
@@ -62,3 +63,4 @@ ces_gbk_wctomb (unsigned char *r, ucs4_t wc, size_t n)
 
   return RET_ILUNI;
 }
+#endif // DVB_UTF8_ENABLE_ENCODE

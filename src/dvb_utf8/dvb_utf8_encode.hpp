@@ -1,6 +1,8 @@
 #ifndef dvb_utf8_encode_h__
 #define dvb_utf8_encode_h__
 
+#if DVB_UTF8_ENABLE_ENCODE
+
 #include "dvb_utf8_char_traits.hpp"
 #include "dvb_utf8_opcodes.hpp"
 
@@ -214,6 +216,7 @@ void serialize_string(stream_buffer &stream, const std::string &text, character_
     }
 }
 
+
 // convert utf8 to dvb and visa versa
 static
 stream_buffer encode(const std::string &text, character_encoding encoding)
@@ -227,4 +230,5 @@ stream_buffer encode(const std::string &text, character_encoding encoding)
 
 } // namespace dvb_utf8
 
+#endif // DVB_UTF8_ENABLE_ENCODE
 #endif // dvb_utf8_encode_h__

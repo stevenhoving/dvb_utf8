@@ -29,6 +29,7 @@ iso8859_1_mbtowc (ucs4_t *pwc, const unsigned char *s, size_t n)
   return 1;
 }
 
+#if DVB_UTF8_ENABLE_ENCODE
 static int
 iso8859_1_wctomb (unsigned char *r, ucs4_t wc, size_t n)
 {
@@ -38,3 +39,4 @@ iso8859_1_wctomb (unsigned char *r, ucs4_t wc, size_t n)
   }
   return RET_ILUNI;
 }
+#endif // DVB_UTF8_ENABLE_ENCODE

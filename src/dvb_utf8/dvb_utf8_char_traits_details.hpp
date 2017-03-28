@@ -5,6 +5,7 @@ namespace dvb_utf8
 {
 namespace converter_factory
 {
+#if DVB_UTF8_ENABLE_ENCODE
 template<typename InputConverter, typename OutputConverter>
 struct from_utf8
 {
@@ -43,6 +44,7 @@ struct from_utf8
         return result;
     }
 };
+#endif // DVB_UTF8_ENABLE_ENCODE
 
 template<typename InputConverter, typename OutputConverter>
 struct to_utf8

@@ -142,6 +142,7 @@ gb18030ext_mbtowc (ucs4_t *pwc, const unsigned char *s, size_t n)
   return RET_ILSEQ;
 }
 
+#if DVB_UTF8_ENABLE_ENCODE
 static const unsigned short gb18030ext_page2e[80] = {
   0x0000, 0xfe50, 0x0000, 0x0000, 0xfe54, 0x0000, 0x0000, 0x0000, /*0x80-0x87*/
   0xfe57, 0x0000, 0x0000, 0xfe58, 0xfe5d, 0x0000, 0x0000, 0x0000, /*0x88-0x8f*/
@@ -325,3 +326,4 @@ gb18030ext_wctomb (unsigned char *r, ucs4_t wc, size_t n)
   }
   return RET_TOOSMALL;
 }
+#endif // DVB_UTF8_ENABLE_ENCODE

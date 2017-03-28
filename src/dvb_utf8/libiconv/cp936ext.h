@@ -62,6 +62,7 @@ cp936ext_mbtowc (ucs4_t *pwc, const unsigned char *s, size_t n)
   return RET_ILSEQ;
 }
 
+#if DVB_UTF8_ENABLE_ENCODE
 static const unsigned short cp936ext_page01[16] = {
   0x0000, 0x0000, 0x0000, 0x0000, 0xa8bd, 0x0000, 0x0000, 0x0000, /*0x40-0x47*/
   0xa8be, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, /*0x48-0x4f*/
@@ -96,3 +97,4 @@ cp936ext_wctomb (unsigned char *r, ucs4_t wc, size_t n)
   }
   return RET_TOOSMALL;
 }
+#endif // DVB_UTF8_ENABLE_ENCODE

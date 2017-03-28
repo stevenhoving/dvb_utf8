@@ -1898,6 +1898,7 @@ big5_mbtowc (ucs4_t *pwc, const unsigned char *s, size_t n)
   return RET_ILSEQ;
 }
 
+#if DVB_UTF8_ENABLE_ENCODE
 static const unsigned short big5_2charset[13703] = {
   0xa246, 0xa247, 0xa244, 0xa1b1, 0xa258, 0xa1d3, 0xa150, 0xa1d1,
   0xa1d2, 0xa3be, 0xa3bc, 0xa3bd, 0xa3bf, 0xa3bb, 0xa344, 0xa345,
@@ -4157,3 +4158,4 @@ big5_wctomb (unsigned char *r, ucs4_t wc, size_t n)
   }
   return RET_TOOSMALL;
 }
+#endif // DVB_UTF8_ENABLE_ENCODE

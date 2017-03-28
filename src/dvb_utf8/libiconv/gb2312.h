@@ -1106,6 +1106,7 @@ gb2312_mbtowc (ucs4_t *pwc, const unsigned char *s, size_t n)
   return RET_ILSEQ;
 }
 
+#if DVB_UTF8_ENABLE_ENCODE
 static const unsigned short gb2312_2charset[7445] = {
   0x2168, 0x216c, 0x2127, 0x2163, 0x2140, 0x2141, 0x2824, 0x2822,
   0x2828, 0x2826, 0x283a, 0x282c, 0x282a, 0x2830, 0x282e, 0x2142,
@@ -2568,3 +2569,4 @@ gb2312_wctomb (unsigned char *r, ucs4_t wc, size_t n)
   }
   return RET_TOOSMALL;
 }
+#endif // DVB_UTF8_ENABLE_ENCODE

@@ -49,7 +49,7 @@ utf16be_mbtowc (ucs4_t *pwc, const unsigned char *s, size_t n)
 ilseq:
   return RET_SHIFT_ILSEQ(count);
 }
-
+#if DVB_UTF8_ENABLE_ENCODE
 static int
 utf16be_wctomb (unsigned char *r, ucs4_t wc, size_t n)
 {
@@ -77,3 +77,4 @@ utf16be_wctomb (unsigned char *r, ucs4_t wc, size_t n)
   }
   return RET_ILUNI;
 }
+#endif // DVB_UTF8_ENABLE_ENCODE

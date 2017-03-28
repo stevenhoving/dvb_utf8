@@ -219,6 +219,7 @@ gb18030uni_mbtowc (ucs4_t *pwc, const unsigned char *s, size_t n)
   return RET_ILSEQ;
 }
 
+#if DVB_UTF8_ENABLE_ENCODE
 static int
 gb18030uni_wctomb (unsigned char *r, ucs4_t wc, size_t n)
 {
@@ -254,3 +255,4 @@ gb18030uni_wctomb (unsigned char *r, ucs4_t wc, size_t n)
   }
   return RET_TOOSMALL;
 }
+#endif // DVB_UTF8_ENABLE_ENCODE

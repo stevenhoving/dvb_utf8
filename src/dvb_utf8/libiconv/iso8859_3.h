@@ -60,6 +60,7 @@ iso8859_3_mbtowc (ucs4_t *pwc, const unsigned char *s, size_t n)
   return RET_ILSEQ;
 }
 
+#if DVB_UTF8_ENABLE_ENCODE
 static const unsigned char iso8859_3_page00[96] = {
   0xa0, 0x00, 0x00, 0xa3, 0xa4, 0x00, 0x00, 0xa7, /* 0xa0-0xa7 */
   0xa8, 0x00, 0x00, 0x00, 0x00, 0xad, 0x00, 0x00, /* 0xa8-0xaf */
@@ -95,6 +96,7 @@ static const unsigned char iso8859_3_page02[8] = {
   0xa2, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 0xd8-0xdf */
 };
 
+
 static int
 iso8859_3_wctomb (unsigned char *r, ucs4_t wc, size_t n)
 {
@@ -115,3 +117,4 @@ iso8859_3_wctomb (unsigned char *r, ucs4_t wc, size_t n)
   }
   return RET_ILUNI;
 }
+#endif // DVB_UTF8_ENABLE_ENCODE

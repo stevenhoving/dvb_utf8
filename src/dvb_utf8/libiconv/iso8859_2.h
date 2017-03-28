@@ -53,6 +53,7 @@ iso8859_2_mbtowc (ucs4_t *pwc, const unsigned char *s, size_t n)
   return 1;
 }
 
+#if DVB_UTF8_ENABLE_ENCODE
 static const unsigned char iso8859_2_page00[224] = {
   0xa0, 0x00, 0x00, 0x00, 0xa4, 0x00, 0x00, 0xa7, /* 0xa0-0xa7 */
   0xa8, 0x00, 0x00, 0x00, 0x00, 0xad, 0x00, 0x00, /* 0xa8-0xaf */
@@ -109,3 +110,4 @@ iso8859_2_wctomb (unsigned char *r, ucs4_t wc, size_t n)
   }
   return RET_ILUNI;
 }
+#endif // DVB_UTF8_ENABLE_ENCODE

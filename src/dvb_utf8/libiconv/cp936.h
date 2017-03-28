@@ -45,7 +45,7 @@
  * when a character from a private area is moved to an official Unicode code
  * point, they are useful for some people in practice.
  */
-
+#if DVB_UTF8_ENABLE_ENCODE
 static int
 cp936_mbtowc (ucs4_t *pwc, const unsigned char *s, size_t n)
 {
@@ -88,6 +88,7 @@ cp936_mbtowc (ucs4_t *pwc, const unsigned char *s, size_t n)
   return RET_ILSEQ;
 }
 
+
 static int
 cp936_wctomb (unsigned char *r, ucs4_t wc, size_t n)
 {
@@ -123,3 +124,4 @@ cp936_wctomb (unsigned char *r, ucs4_t wc, size_t n)
   }
   return RET_ILUNI;
 }
+#endif

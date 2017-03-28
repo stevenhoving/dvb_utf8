@@ -116,7 +116,7 @@ namespace dummy
             dst += static_cast<unsigned char>(c);
         }
     };
-
+#if DVB_UTF8_ENABLE_ENCODE
     struct from_utf8
     {
         int operator()(const unsigned char *src, const int src_len, ucs4_t &dst)
@@ -125,6 +125,7 @@ namespace dummy
             return 1;
         }
     };
+#endif // DVB_UTF8_ENABLE_ENCODE
 }
 
 namespace unicode
@@ -136,7 +137,7 @@ namespace unicode
             unicode_to_utf8(c, dst);
         }
     };
-
+#if DVB_UTF8_ENABLE_ENCODE
     struct from_utf8
     {
         int operator()(const unsigned char *src, const int src_len, ucs4_t &dst)
@@ -144,6 +145,7 @@ namespace unicode
             return utf8_to_unicode(src, src_len, dst);
         }
     };
+#endif // DVB_UTF8_ENABLE_ENCODE
 }
 
 } // namespace intermediate
@@ -153,15 +155,6 @@ namespace unicode
 /************************************************************************/
 namespace dummy_input
 {
-    struct wctomb
-    {
-        int operator()(unsigned char *r, ucs4_t wc, size_t n)
-        {
-            *r = (unsigned char)wc;
-            return 1;
-        }
-    };
-
     struct mbtowc
     {
         int operator()(ucs4_t *pwc, const unsigned char *s, size_t n)
@@ -170,18 +163,20 @@ namespace dummy_input
             return 1;
         }
     };
-}
-
-namespace gb18030
-{
+#if DVB_UTF8_ENABLE_ENCODE
     struct wctomb
     {
         int operator()(unsigned char *r, ucs4_t wc, size_t n)
         {
-            return gb18030_wctomb(r, wc, n);
+            *r = (unsigned char)wc;
+            return 1;
         }
     };
+#endif // DVB_UTF8_ENABLE_ENCODE
+}
 
+namespace gb18030
+{
     struct mbtowc
     {
         int operator()(ucs4_t *pwc, const unsigned char *s, size_t n)
@@ -191,20 +186,23 @@ namespace gb18030
     };
 
     using to_utf8 = converter_factory::to_utf8<mbtowc, intermediate::unicode::to_utf8>;
+
+#if DVB_UTF8_ENABLE_ENCODE
+    struct wctomb
+    {
+        int operator()(unsigned char *r, ucs4_t wc, size_t n)
+        {
+            return gb18030_wctomb(r, wc, n);
+        }
+    };
+
     using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
+#endif // DVB_UTF8_ENABLE_ENCODE
 
 } // namespace GB18030
 
 namespace big5
 {
-    struct wctomb
-    {
-        int operator()(unsigned char *r, ucs4_t wc, size_t n)
-        {
-            return big5_wctomb(r, wc, n);
-        }
-    };
-
     struct mbtowc
     {
         int operator()(ucs4_t *pwc, const unsigned char *s, size_t n)
@@ -214,22 +212,22 @@ namespace big5
     };
 
     using to_utf8 = converter_factory::to_utf8<mbtowc, intermediate::unicode::to_utf8>;
-    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
-}
 
-namespace ksx1001
-{
+#if DVB_UTF8_ENABLE_ENCODE
     struct wctomb
     {
         int operator()(unsigned char *r, ucs4_t wc, size_t n)
         {
-            /* \note I put my trust in 'libiconv' and believe this also
-             * converts ksx1001.
-             */
-            return euc_kr_wctomb(r, wc, n);
+            return big5_wctomb(r, wc, n);
         }
     };
 
+    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
+#endif // #if DVB_UTF8_ENABLE_ENCODE
+}
+
+namespace ksx1001
+{
     struct mbtowc
     {
         int operator()(ucs4_t *pwc, const unsigned char *s, size_t n)
@@ -239,20 +237,25 @@ namespace ksx1001
     };
 
     using to_utf8 = converter_factory::to_utf8<mbtowc, intermediate::unicode::to_utf8>;
-    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
-}
 
-namespace iso6937
-{
+#if DVB_UTF8_ENABLE_ENCODE
     struct wctomb
     {
         int operator()(unsigned char *r, ucs4_t wc, size_t n)
         {
-            // my own botched support for iso6937 (not finished yet)
-            return iso6937_wctomb(r, wc, n);
+            /* \note I put my trust in 'libiconv' and believe this also
+            * converts ksx1001.
+            */
+            return euc_kr_wctomb(r, wc, n);
         }
     };
 
+    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
+#endif // DVB_UTF8_ENABLE_ENCODE
+}
+
+namespace iso6937
+{
     struct mbtowc
     {
         int operator()(ucs4_t *pwc, const unsigned char *s, size_t n)
@@ -263,19 +266,22 @@ namespace iso6937
     };
 
     using to_utf8 = converter_factory::to_utf8<mbtowc, intermediate::unicode::to_utf8>;
-    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
-}
-
-namespace iso8859_1
-{
+#if DVB_UTF8_ENABLE_ENCODE
     struct wctomb
     {
         int operator()(unsigned char *r, ucs4_t wc, size_t n)
         {
-            return iso8859_1_wctomb(r, wc, n);
+            // my own botched support for iso6937 (not finished yet)
+            return iso6937_wctomb(r, wc, n);
         }
     };
 
+    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
+#endif // DVB_UTF8_ENABLE_ENCODE
+}
+
+namespace iso8859_1
+{
     struct mbtowc
     {
         int operator()(ucs4_t *pwc, const unsigned char *s, size_t n)
@@ -285,19 +291,20 @@ namespace iso8859_1
     };
 
     using to_utf8 = converter_factory::to_utf8<mbtowc, intermediate::unicode::to_utf8>;
-    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
-}
-
-namespace iso8859_2
-{
+#if DVB_UTF8_ENABLE_ENCODE
     struct wctomb
     {
         int operator()(unsigned char *r, ucs4_t wc, size_t n)
         {
-            return iso8859_2_wctomb(r, wc, n);
+            return iso8859_1_wctomb(r, wc, n);
         }
     };
+    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
+#endif // DVB_UTF8_ENABLE_ENCODE
+}
 
+namespace iso8859_2
+{
     struct mbtowc
     {
         int operator()(ucs4_t *pwc, const unsigned char *s, size_t n)
@@ -307,18 +314,20 @@ namespace iso8859_2
     };
 
     using to_utf8 = converter_factory::to_utf8<mbtowc, intermediate::unicode::to_utf8>;
-    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
-}
-
-namespace iso8859_3
-{
+#if DVB_UTF8_ENABLE_ENCODE
     struct wctomb
     {
         int operator()(unsigned char *r, ucs4_t wc, size_t n)
         {
-            return iso8859_3_wctomb(r, wc, n);
+            return iso8859_2_wctomb(r, wc, n);
         }
     };
+    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
+#endif // DVB_UTF8_ENABLE_ENCODE
+}
+
+namespace iso8859_3
+{
     struct mbtowc
     {
         int operator()(ucs4_t *pwc, const unsigned char *s, size_t n)
@@ -328,18 +337,21 @@ namespace iso8859_3
     };
 
     using to_utf8 = converter_factory::to_utf8<mbtowc, intermediate::unicode::to_utf8>;
-    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
-}
-
-namespace iso8859_4
-{
+#if DVB_UTF8_ENABLE_ENCODE
     struct wctomb
     {
         int operator()(unsigned char *r, ucs4_t wc, size_t n)
         {
-            return iso8859_4_wctomb(r, wc, n);
+            return iso8859_3_wctomb(r, wc, n);
         }
     };
+
+    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
+#endif // DVB_UTF8_ENABLE_ENCODE
+}
+
+namespace iso8859_4
+{
     struct mbtowc
     {
         int operator()(ucs4_t *pwc, const unsigned char *s, size_t n)
@@ -349,18 +361,20 @@ namespace iso8859_4
     };
 
     using to_utf8 = converter_factory::to_utf8<mbtowc, intermediate::unicode::to_utf8>;
-    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
-}
-
-namespace iso8859_5
-{
+#if DVB_UTF8_ENABLE_ENCODE
     struct wctomb
     {
         int operator()(unsigned char *r, ucs4_t wc, size_t n)
         {
-            return iso8859_5_wctomb(r, wc, n);
+            return iso8859_4_wctomb(r, wc, n);
         }
     };
+    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
+#endif // DVB_UTF8_ENABLE_ENCODE
+}
+
+namespace iso8859_5
+{
     struct mbtowc
     {
         int operator()(ucs4_t *pwc, const unsigned char *s, size_t n)
@@ -370,18 +384,20 @@ namespace iso8859_5
     };
 
     using to_utf8 = converter_factory::to_utf8<mbtowc, intermediate::unicode::to_utf8>;
-    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
-}
-
-namespace iso8859_6
-{
+#if DVB_UTF8_ENABLE_ENCODE
     struct wctomb
     {
         int operator()(unsigned char *r, ucs4_t wc, size_t n)
         {
-            return iso8859_6_wctomb(r, wc, n);
+            return iso8859_5_wctomb(r, wc, n);
         }
     };
+    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
+#endif // DVB_UTF8_ENABLE_ENCODE
+}
+
+namespace iso8859_6
+{
     struct mbtowc
     {
         int operator()(ucs4_t *pwc, const unsigned char *s, size_t n)
@@ -391,18 +407,21 @@ namespace iso8859_6
     };
 
     using to_utf8 = converter_factory::to_utf8<mbtowc, intermediate::unicode::to_utf8>;
-    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
-}
-
-namespace iso8859_7
-{
+#if DVB_UTF8_ENABLE_ENCODE
     struct wctomb
     {
         int operator()(unsigned char *r, ucs4_t wc, size_t n)
         {
-            return iso8859_7_wctomb(r, wc, n);
+            return iso8859_6_wctomb(r, wc, n);
         }
     };
+
+    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
+#endif // DVB_UTF8_ENABLE_ENCODE
+}
+
+namespace iso8859_7
+{
     struct mbtowc
     {
         int operator()(ucs4_t *pwc, const unsigned char *s, size_t n)
@@ -412,18 +431,21 @@ namespace iso8859_7
     };
 
     using to_utf8 = converter_factory::to_utf8<mbtowc, intermediate::unicode::to_utf8>;
-    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
-}
-
-namespace iso8859_8
-{
+#if DVB_UTF8_ENABLE_ENCODE
     struct wctomb
     {
         int operator()(unsigned char *r, ucs4_t wc, size_t n)
         {
-            return iso8859_8_wctomb(r, wc, n);
+            return iso8859_7_wctomb(r, wc, n);
         }
     };
+
+    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
+#endif // DVB_UTF8_ENABLE_ENCODE
+}
+
+namespace iso8859_8
+{
     struct mbtowc
     {
         int operator()(ucs4_t *pwc, const unsigned char *s, size_t n)
@@ -433,18 +455,21 @@ namespace iso8859_8
     };
 
     using to_utf8 = converter_factory::to_utf8<mbtowc, intermediate::unicode::to_utf8>;
-    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
-}
-
-namespace iso8859_9
-{
+#if DVB_UTF8_ENABLE_ENCODE
     struct wctomb
     {
         int operator()(unsigned char *r, ucs4_t wc, size_t n)
         {
-            return iso8859_9_wctomb(r, wc, n);
+            return iso8859_8_wctomb(r, wc, n);
         }
     };
+
+    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
+#endif // DVB_UTF8_ENABLE_ENCODE
+}
+
+namespace iso8859_9
+{
     struct mbtowc
     {
         int operator()(ucs4_t *pwc, const unsigned char *s, size_t n)
@@ -454,18 +479,20 @@ namespace iso8859_9
     };
 
     using to_utf8 = converter_factory::to_utf8<mbtowc, intermediate::unicode::to_utf8>;
-    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
-}
-
-namespace iso8859_10
-{
+#if DVB_UTF8_ENABLE_ENCODE
     struct wctomb
     {
         int operator()(unsigned char *r, ucs4_t wc, size_t n)
         {
-            return iso8859_10_wctomb(r, wc, n);
+            return iso8859_9_wctomb(r, wc, n);
         }
     };
+    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
+#endif // DVB_UTF8_ENABLE_ENCODE
+}
+
+namespace iso8859_10
+{
     struct mbtowc
     {
         int operator()(ucs4_t *pwc, const unsigned char *s, size_t n)
@@ -475,18 +502,20 @@ namespace iso8859_10
     };
 
     using to_utf8 = converter_factory::to_utf8<mbtowc, intermediate::unicode::to_utf8>;
-    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
-}
-
-namespace iso8859_11
-{
+#if DVB_UTF8_ENABLE_ENCODE
     struct wctomb
     {
         int operator()(unsigned char *r, ucs4_t wc, size_t n)
         {
-            return iso8859_11_wctomb(r, wc, n);
+            return iso8859_10_wctomb(r, wc, n);
         }
     };
+    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
+#endif // DVB_UTF8_ENABLE_ENCODE
+}
+
+namespace iso8859_11
+{
     struct mbtowc
     {
         int operator()(ucs4_t *pwc, const unsigned char *s, size_t n)
@@ -496,18 +525,21 @@ namespace iso8859_11
     };
 
     using to_utf8 = converter_factory::to_utf8<mbtowc, intermediate::unicode::to_utf8>;
-    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
-}
-
-namespace iso8859_13
-{
+#if DVB_UTF8_ENABLE_ENCODE
     struct wctomb
     {
         int operator()(unsigned char *r, ucs4_t wc, size_t n)
         {
-            return iso8859_13_wctomb(r, wc, n);
+            return iso8859_11_wctomb(r, wc, n);
         }
     };
+
+    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
+#endif // DVB_UTF8_ENABLE_ENCODE
+}
+
+namespace iso8859_13
+{
     struct mbtowc
     {
         int operator()(ucs4_t *pwc, const unsigned char *s, size_t n)
@@ -517,18 +549,21 @@ namespace iso8859_13
     };
 
     using to_utf8 = converter_factory::to_utf8<mbtowc, intermediate::unicode::to_utf8>;
-    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
-}
-
-namespace iso8859_14
-{
+#if DVB_UTF8_ENABLE_ENCODE
     struct wctomb
     {
         int operator()(unsigned char *r, ucs4_t wc, size_t n)
         {
-            return iso8859_14_wctomb(r, wc, n);
+            return iso8859_13_wctomb(r, wc, n);
         }
     };
+
+    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
+#endif // DVB_UTF8_ENABLE_ENCODE
+}
+
+namespace iso8859_14
+{
     struct mbtowc
     {
         int operator()(ucs4_t *pwc, const unsigned char *s, size_t n)
@@ -538,18 +573,21 @@ namespace iso8859_14
     };
 
     using to_utf8 = converter_factory::to_utf8<mbtowc, intermediate::unicode::to_utf8>;
-    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
-}
-
-namespace iso8859_15
-{
+#if DVB_UTF8_ENABLE_ENCODE
     struct wctomb
     {
         int operator()(unsigned char *r, ucs4_t wc, size_t n)
         {
-            return iso8859_15_wctomb(r, wc, n);
+            return iso8859_14_wctomb(r, wc, n);
         }
     };
+
+    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
+#endif // DVB_UTF8_ENABLE_ENCODE
+}
+
+namespace iso8859_15
+{
     struct mbtowc
     {
         int operator()(ucs4_t *pwc, const unsigned char *s, size_t n)
@@ -559,24 +597,29 @@ namespace iso8859_15
     };
 
     using to_utf8 = converter_factory::to_utf8<mbtowc, intermediate::unicode::to_utf8>;
+#if DVB_UTF8_ENABLE_ENCODE
+    struct wctomb
+    {
+        int operator()(unsigned char *r, ucs4_t wc, size_t n)
+        {
+            return iso8859_15_wctomb(r, wc, n);
+        }
+    };
+
     using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
+#endif // DVB_UTF8_ENABLE_ENCODE
 }
 
 namespace utf8
 {
     using to_utf8 = converter_factory::to_utf8<dummy_input::mbtowc, intermediate::dummy::to_utf8>;
+#if DVB_UTF8_ENABLE_ENCODE
     using from_utf8 = converter_factory::from_utf8<dummy_input::wctomb, intermediate::dummy::from_utf8>;
+#endif // DVB_UTF8_ENABLE_ENCODE
 }
 
 namespace utf16be
 {
-    struct wctomb
-    {
-        int operator()(unsigned char *r, ucs4_t wc, size_t n)
-        {
-            return utf16be_wctomb(r, wc, n);
-        }
-    };
     struct mbtowc
     {
         int operator()(ucs4_t *pwc, const unsigned char *s, size_t n)
@@ -586,18 +629,21 @@ namespace utf16be
     };
 
     using to_utf8 = converter_factory::to_utf8<mbtowc, intermediate::unicode::to_utf8>;
-    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
-}
-
-namespace utf16le
-{
+#if DVB_UTF8_ENABLE_ENCODE
     struct wctomb
     {
         int operator()(unsigned char *r, ucs4_t wc, size_t n)
         {
-            return utf16le_wctomb(r, wc, n);
+            return utf16be_wctomb(r, wc, n);
         }
     };
+
+    using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
+#endif // DVB_UTF8_ENABLE_ENCODE
+}
+
+namespace utf16le
+{
     struct mbtowc
     {
         int operator()(ucs4_t *pwc, const unsigned char *s, size_t n)
@@ -607,20 +653,22 @@ namespace utf16le
     };
 
     using to_utf8 = converter_factory::to_utf8<mbtowc, intermediate::unicode::to_utf8>;
+#if DVB_UTF8_ENABLE_ENCODE
+    struct wctomb
+    {
+        int operator()(unsigned char *r, ucs4_t wc, size_t n)
+        {
+            return utf16le_wctomb(r, wc, n);
+        }
+    };
+
     using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
+#endif // DVB_UTF8_ENABLE_ENCODE
 }
 
 // unicode Basic Multilingual Plane (BMP)
 namespace ucs2be
 {
-    struct wctomb
-    {
-        int operator()(unsigned char *r, ucs4_t wc, size_t n)
-        {
-            return ucs2be_wctomb(r, wc, n);
-        }
-    };
-
     struct mbtowc
     {
         int operator()(ucs4_t *pwc, const unsigned char *s, size_t n)
@@ -630,7 +678,17 @@ namespace ucs2be
     };
 
     using to_utf8 = converter_factory::to_utf8<mbtowc, intermediate::unicode::to_utf8>;
+#if DVB_UTF8_ENABLE_ENCODE
+    struct wctomb
+    {
+        int operator()(unsigned char *r, ucs4_t wc, size_t n)
+        {
+            return ucs2be_wctomb(r, wc, n);
+        }
+    };
+
     using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
+#endif // DVB_UTF8_ENABLE_ENCODE
 }
 
 } // namespace dvb_utf8

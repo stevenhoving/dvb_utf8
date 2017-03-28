@@ -266,6 +266,7 @@ gb18030_mbtowc (ucs4_t *pwc, const unsigned char *s, size_t n)
   }
 }
 
+#if DVB_UTF8_ENABLE_ENCODE
 static const unsigned short gb18030_pua2charset[31*3] = {
 /* Unicode range   GB18030 range */
   0xe766, 0xe76b,  0xa2ab, /*.. 0xa2b0, */
@@ -378,3 +379,4 @@ gb18030_wctomb (unsigned char *r, ucs4_t wc, size_t n)
   }
   return RET_TOOSMALL;
 }
+#endif // DVB_UTF8_ENABLE_ENCODE

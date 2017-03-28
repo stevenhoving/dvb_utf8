@@ -1,8 +1,10 @@
 #include "dvb_utf8.hpp"
-#include "helpers.hpp"
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <string>
+#if DVB_UTF8_ENABLE_ENCODE
+#include "helpers.hpp"
+#endif // DVB_UTF8_ENABLE_ENCODE
 
 using namespace dvb_utf8;
 
@@ -18,7 +20,7 @@ TEST(test_big5, test_big5_decode)
 }
 
 // there is something strange going on...
-#if 0
+#if DVB_UTF8_ENABLE_ENCODE
 TEST(test_big5, test_big5_encode_decode)
 {
     auto test_bug5_utf8_data = to_utf8_string({

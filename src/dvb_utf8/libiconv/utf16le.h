@@ -50,6 +50,7 @@ ilseq:
   return RET_SHIFT_ILSEQ(count);
 }
 
+#if DVB_UTF8_ENABLE_ENCODE
 static int
 utf16le_wctomb (unsigned char *r, ucs4_t wc, size_t n)
 {
@@ -77,3 +78,4 @@ utf16le_wctomb (unsigned char *r, ucs4_t wc, size_t n)
   }
   return RET_ILUNI;
 }
+#endif //DVB_UTF8_ENABLE_ENCODE

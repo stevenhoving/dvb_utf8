@@ -20,7 +20,7 @@
 /*
  * GBK extensions
  */
-
+#if DVB_UTF8_ENABLE_ENCODE
 static const unsigned short gbkext_inv_2charset[14313] = {
   0xa840, 0xa841, 0xa842, 0xa95c, 0xa843, 0xa844, 0xa845, 0xa846,
   0xa847, 0xa848, 0xa959, 0xa849, 0xa84a, 0xa84b, 0xa84c, 0xa84d,
@@ -2340,3 +2340,4 @@ gbkext_inv_wctomb (unsigned char *r, ucs4_t wc, size_t n)
   }
   return RET_TOOSMALL;
 }
+#endif // DVB_UTF8_ENABLE_ENCODE

@@ -1,6 +1,8 @@
 #ifndef dvb_utf8_stream_buffer_h__
 #define dvb_utf8_stream_buffer_h__
 
+#if DVB_UTF8_ENABLE_ENCODE
+
 #include <cstdint>
 #include <cstring>
 #include <vector>
@@ -126,4 +128,5 @@ public:
 
 } // namespace dvb_utf8
 
+#endif // DVB_UTF8_ENABLE_ENCODE
 #endif // dvb_utf8_stream_buffer_h__

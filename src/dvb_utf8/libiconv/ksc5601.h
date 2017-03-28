@@ -1216,6 +1216,7 @@ ksc5601_mbtowc (ucs4_t *pwc, const unsigned char *s, size_t n)
   return RET_ILSEQ;
 }
 
+#if DVB_UTF8_ENABLE_ENCODE
 static const unsigned short ksc5601_2charset[8227] = {
   0x222e, 0x2234, 0x2157, 0x2127, 0x2823, 0x2129, 0x2267, 0x2146,
   0x213e, 0x2977, 0x2978, 0x2225, 0x2252, 0x2124, 0x222c, 0x2976,
@@ -3019,3 +3020,4 @@ ksc5601_wctomb (unsigned char *r, ucs4_t wc, size_t n)
   }
   return RET_TOOSMALL;
 }
+#endif // DVB_UTF8_ENABLE_ENCODE
