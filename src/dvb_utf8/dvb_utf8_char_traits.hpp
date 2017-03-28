@@ -5,6 +5,7 @@
 #include "dvb_utf8_stream_span.hpp"
 
 #include "libiconv/libiconv.h"
+#include "freesat/freesat.hpp"
 
 #include <string>
 
@@ -690,6 +691,29 @@ namespace ucs2be
     };
 
     using from_utf8 = converter_factory::from_utf8<wctomb, intermediate::unicode::from_utf8>;
+#endif // DVB_UTF8_ENABLE_ENCODE
+}
+
+namespace freesat
+{
+    // \todo figure out how to test this, freesat is a initiative of the bbc?
+    struct to_utf8
+    {
+        std::string operator()(const stream_span &stream) const
+        {
+            return freesat_huffman_decode(stream);
+        }
+    };
+#if DVB_UTF8_ENABLE_ENCODE
+    struct from_utf8
+    {
+        stream_buffer operator()(const std::string &utf8) const
+        {
+            // \todo implement a freesat huffman encode function.
+            //return freesat_huffman_encode(utf8);
+            return "";
+        }
+    };
 #endif // DVB_UTF8_ENABLE_ENCODE
 }
 

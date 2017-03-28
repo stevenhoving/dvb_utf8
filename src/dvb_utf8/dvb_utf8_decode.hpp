@@ -213,6 +213,9 @@ std::string deserialize_string(const stream_span &data, const character_encoding
         return utf16le::to_utf8()(data);
     case character_encoding::ucs2be:
         return ucs2be::to_utf8()(data);
+    case character_encoding::freesat:
+        return freesat::to_utf8()(data);
+        break;
     default:
         DVB_DBG("warning, invalid or unsupported encoding type\n");
         break;

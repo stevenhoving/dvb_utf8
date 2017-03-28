@@ -58,13 +58,12 @@ void freesat_table_init()
 
 /** \brief Decode an EPG string as necessary
  *
- *  \param src - Possibly encoded string
- *  \param size - Size of the buffer
+ *  \param[in] stream Possibly encoded string
  *
  *  \retval NULL - Can't decode
  *  \return A decoded string
  */
-std::string freesat_huffman_decode(dvb_utf8::stream_span &stream)
+std::string freesat_huffman_decode(const dvb_utf8::stream_span &stream)
 {
     std::string uncompressed;
     int uncompressed_len = 30;
