@@ -1,7 +1,7 @@
 #ifndef tables_hpp__
 #define tables_hpp__
 
-#include <dvb_utf8.h>
+#include <dvb_utf8.hpp>
 
 #include "table_ids.hpp"
 #include "table_base.hpp"
