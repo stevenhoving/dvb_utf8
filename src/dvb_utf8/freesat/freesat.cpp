@@ -190,8 +190,7 @@ dvb_utf8::stream_buffer freesat_huffman_encode(const std::string &text)
             auto &node = tables[tableid][lastch][i];
             if (node.next == itr)
             {
-                value = value << node.bits;
-                value |= (node.value >> (32 - node.bits));
+                value |= node.value >> bits;
                 bits += node.bits;
                 found = true;
                 lastch = itr;
@@ -203,18 +202,19 @@ dvb_utf8::stream_buffer freesat_huffman_encode(const std::string &text)
 
         while (bits >= 8)
         {
-            int shift = bits - 8;
-            uint8_t byte = (value >> shift) & 0xFF;
+            uint8_t byte = (value >> 24) & 0xFF;
+            value <<= 8;
+            bits -= 8;
 
             result.write(byte);
-            bits -= 8;
         }
     }
 
-    if (bits > 0)
+    while (bits > 0)
     {
-        int shift = 8 - bits;
-        uint8_t byte = (value << shift) & 0xFF;
+        uint8_t byte = (value >> 24) & 0xFF;
+        value <<= 8;
+        bits -= 8;
 
         result.write(byte);
     }
