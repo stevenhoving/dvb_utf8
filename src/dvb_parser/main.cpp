@@ -42,10 +42,10 @@ std::vector<uint8_t> read_test_data(const std::string &path)
 
 int main()
 {
-    //auto stream = dvb_utf8::stream_buffer(read_test_data("D:/dev/dvb_utf8/pid16.raw"));
-    auto stream = dvb_utf8::stream_buffer(read_test_data("D:/dev/dvb_utf8/pid18.raw"));
-    //auto stream = dvb_utf8::stream_buffer(read_test_data("D:/dev/dvb_utf8/pid17.raw"));
-    //auto stream = dvb_utf8::stream_buffer(read_test_data("D:/dev/dvb_utf8/pid18-2.raw"));
+    //auto stream = read_test_data("D:/dev/dvb_utf8/pid16.raw");
+    auto stream = read_test_data("D:/dev/dvb_utf8/pid18.raw");
+    //auto stream = read_test_data("D:/dev/dvb_utf8/pid17.raw");
+    //auto stream = read_test_data("D:/dev/dvb_utf8/pid18-2.raw");
     auto payload = dvb_utf8::stream_span(stream.data(), &stream.data()[stream.size()]);
 
     stop_watch stopwatch;
