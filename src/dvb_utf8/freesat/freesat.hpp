@@ -7,6 +7,6 @@
 #include <string>
 
 std::string freesat_huffman_decode(const dvb_utf8::stream_span &compressed);
-dvb_utf8::stream_buffer freesat_huffman_encode(const std::string &text);
+dvb_utf8::stream_buffer freesat_huffman_encode(const std::string &text, const int tableid = 0);
 
 #endif

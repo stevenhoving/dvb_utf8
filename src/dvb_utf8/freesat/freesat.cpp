@@ -168,7 +168,7 @@ std::string freesat_huffman_decode(const dvb_utf8::stream_span &stream)
     return uncompressed;
 }
 
-dvb_utf8::stream_buffer freesat_huffman_encode(const std::string &text)
+dvb_utf8::stream_buffer freesat_huffman_encode(const std::string &text, const int tableid /*= 0 */)
 {
     freesat_table_init();   /**< Load the tables if necessary */
 
@@ -177,11 +177,12 @@ dvb_utf8::stream_buffer freesat_huffman_encode(const std::string &text)
     //       can remove this variable.
     bool found;
 
-    int tableid = 0;
     char lastch = 0;
     uint32_t value = 0;
     int bits = 0;
     dvb_utf8::stream_buffer result;
+
+    result.write((uint8_t)(tableid + 1));
     for (auto itr : text)
     {
         found = false;
