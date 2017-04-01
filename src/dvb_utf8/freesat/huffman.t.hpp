@@ -1,4 +1,6 @@
-const struct hufftab memtable[] = {
+
+static constexpr std::array<struct hufftab, 5187> memtable = {
+{
     /* char from; unsigned int value; short bits; char next; */
     {0x00, 0x00000000, 0x0002, 0x54},	// 51
     {0x00, 0x40000000, 0x0003, 0x42},	// 51
@@ -5187,6 +5189,4 @@ const struct hufftab memtable[] = {
     {0x7e, 0x80000000, 0x0001, 0x01},	// 2
     {0x7f, 0x00000000, 0x0001, 0x01},	// 2
     {0x7f, 0x80000000, 0x0001, 0x01}	// 2
-};
-
-constexpr int MEMTABLE_SIZE = int(sizeof(memtable) / sizeof(memtable[0]));
+}};

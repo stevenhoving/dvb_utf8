@@ -21,8 +21,7 @@ constexpr char START = '\0';
 constexpr char STOP = '\0';
 constexpr char ESCAPE = '\1';
 
-#define HUFFMAN_TABLE_SIZE 256
-
+constexpr int HUFFMAN_TABLE_SIZE = 256;
 static std::array<const hufftab *, HUFFMAN_TABLE_SIZE> tables[2];
 static std::array<int, HUFFMAN_TABLE_SIZE> table_size[2];
 
@@ -44,7 +43,7 @@ void freesat_table_init()
         table_size[1][i] = 0;
     }
 
-    for (int i = 0; i < MEMTABLE_SIZE; ++i) {
+    for (size_t i = 0; i < memtable.size(); ++i) {
         if (memtable[i].from != this_char) {
             this_char = memtable[i].from;
             if (!this_char) { // Jumping to next table
