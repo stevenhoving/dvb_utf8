@@ -22,27 +22,19 @@ constexpr char STOP = '\0';
 constexpr char ESCAPE = '\1';
 
 constexpr int HUFFMAN_TABLE_SIZE = 256;
-static std::array<const hufftab *, HUFFMAN_TABLE_SIZE> tables[2];
-static std::array<int, HUFFMAN_TABLE_SIZE> table_size[2];
+static std::array<const hufftab *, HUFFMAN_TABLE_SIZE> tables[2]{ {},{} };
+static std::array<int, HUFFMAN_TABLE_SIZE> table_size[2]{ {},{} };
 
 void freesat_table_init()
 {
-    int this_table = -1;
-    unsigned char this_char = 0xff;
     static bool runonce = true;
-
     // Initialization to be done once only
     if (!runonce)
         return;
     runonce = false;
 
-    for (int i = 0; i < HUFFMAN_TABLE_SIZE; ++i) {
-        tables[0][i] = nullptr;
-        tables[1][i] = nullptr;
-        table_size[0][i] = 0;
-        table_size[1][i] = 0;
-    }
-
+    int this_table = -1;
+    unsigned char this_char = 0xff;
     for (size_t i = 0; i < memtable.size(); ++i) {
         if (memtable[i].from != this_char) {
             this_char = memtable[i].from;
@@ -80,7 +72,6 @@ std::string freesat_huffman_decode(const dvb_utf8::stream_span &stream)
     uncompressed.resize(uncompressed_len + 1);
     unsigned int value = 0, byte = 0, bit = 0;
     int p = 0;
-    int lastch = START;
 
     // 'stream' the first 4 bytes into a 32 bit int
     while (byte < 4 && byte < size) {
@@ -90,6 +81,7 @@ std::string freesat_huffman_decode(const dvb_utf8::stream_span &stream)
 
     freesat_table_init();   /**< Load the tables as necessary */
 
+    int lastch = START;
     do {
         int found = 0;
         unsigned int bitShift = 0;
@@ -112,7 +104,7 @@ std::string freesat_huffman_decode(const dvb_utf8::stream_span &stream)
         {
             int j;
             for (j = 0; j < table_size[tableid][lastch]; j++) {
-                unsigned int mask = 0, maskbit = 0x80000000;
+                unsigned int mask = 0u, maskbit = 0x80000000;
                 for (short kk = 0; kk < tables[tableid][lastch][j].bits; kk++) {
                     mask |= maskbit;
                     maskbit >>= 1;
@@ -154,7 +146,7 @@ std::string freesat_huffman_decode(const dvb_utf8::stream_span &stream)
         }
         else
         {
-            DVB_DBG("Missing table %d entry: <%s>\n", tableid + 1, uncompressed.c_str());
+            printf("Missing table %d entry: <%s>\n", tableid + 1, uncompressed.c_str());
             // Entry missing in table.
 
             // \todo error situation, is skipping over the bytes we have parsed the correct thing todo?
