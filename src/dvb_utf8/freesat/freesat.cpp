@@ -189,8 +189,17 @@ dvb_utf8::stream_buffer freesat_huffman_encode(const std::string &text, const in
                 break;
             }
         }
+        // could not find huffman node, lets try escaping....
         if (!found)
-            __debugbreak();
+        {
+            for (int i = 0; i < table_size[tableid][lastch]; ++i)
+            {
+                auto &node = tables[tableid][lastch][i];
+                if (node.next == ESCAPE)
+                {
+                }
+            }
+        }
 
         while (bits >= 8)
         {
