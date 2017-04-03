@@ -32,6 +32,11 @@ public:
     stream_buffer(stream_buffer &&other) = default;
     stream_buffer &operator=(stream_buffer &&other) = default;
 
+    uint8_t peek_u8() const
+    {
+        return data_[index_];
+    }
+
     void write(const uint8_t value) const
     {
         prep_write_(sizeof(value));

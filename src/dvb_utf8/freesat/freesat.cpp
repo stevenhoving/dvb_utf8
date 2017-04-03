@@ -156,51 +156,78 @@ std::string freesat_huffman_decode(const dvb_utf8::stream_span &stream)
     } while (lastch != STOP && value != 0);
 
     stream.seek(byte, SEEK_CUR);
+    uncompressed.resize(p);
     return uncompressed;
+}
+
+// bitstreamnode
+struct bitnode
+{
+    uint32_t value;
+    int bits;
+    std::vector<uint8_t> escape;
+};
+
+hufftab find_node(char ch, int tableid, char lastch)
+{
+    // if we have to escape this character find the first escape node
+    if (ch < 0)
+        ch = ESCAPE;
+
+    printf("Find node for: %c (0x%X)\n", ch, ch);
+    for (int i = 0; i < table_size[tableid][lastch]; ++i)
+    {
+        auto &node = tables[tableid][lastch][i];
+        if (node.next == ch)
+            return node;
+    }
+    __debugbreak();
 }
 
 dvb_utf8::stream_buffer freesat_huffman_encode(const std::string &text, const int tableid /*= 0 */)
 {
-    freesat_table_init();   /**< Load the tables if necessary */
+    std::vector<bitnode> bitstream;
 
-    // \todo check if all characters are present in the memory tables. If so we
-    //       can assume that we will always find a matching huffman node. And we
-    //       can remove this variable.
+    // when not found and not escaping yet, enable escaping the bytes.
     bool found;
-
     char lastch = 0;
-    uint32_t value = 0;
-    int bits = 0;
     dvb_utf8::stream_buffer result;
 
-    result.write((uint8_t)(tableid + 1));
-    for (auto itr : text)
-    {
-        found = false;
-        for (int i = 0; i < table_size[tableid][lastch]; ++i)
-        {
-            auto &node = tables[tableid][lastch][i];
-            if (node.next == itr)
-            {
-                value |= node.value >> bits;
-                bits += node.bits;
-                found = true;
-                lastch = itr;
-                break;
-            }
-        }
-        // could not find huffman node, lets try escaping....
-        if (!found)
-        {
-            for (int i = 0; i < table_size[tableid][lastch]; ++i)
-            {
-                auto &node = tables[tableid][lastch][i];
-                if (node.next == ESCAPE)
-                {
-                }
-            }
-        }
+    freesat_table_init();   /**< Load the tables if necessary */
 
+    result.write((uint8_t)(tableid + 1));
+    for (int i = 0; i < text.size(); ++i)
+    {
+        auto itr = text[i];
+
+        auto node = find_node(itr, tableid, lastch);
+        bitnode bit;
+        bit.value = node.value;
+        bit.bits = node.bits;
+
+        if (itr < 0)
+        {
+            for (; text[i] < 0 && i < text.size(); ++i)
+                bit.escape.emplace_back(text[i]);
+
+            // the first ascii character will break the escape sequence
+            if (i != text.size())
+            {
+                // if the escaped sequence did not start on the first char
+                if (lastch != 0)
+                    lastch = text[i++];
+                bit.escape.emplace_back(lastch);
+            }
+        }
+        bitstream.emplace_back(bit);
+    }
+
+    uint32_t value = 0;
+    int bits = 0;
+    for (auto &node : bitstream)
+    {
+        value |= node.value >> bits;
+        bits += node.bits;
         while (bits >= 8)
         {
             uint8_t byte = (value >> 24) & 0xFF;
@@ -208,6 +235,26 @@ dvb_utf8::stream_buffer freesat_huffman_encode(const std::string &text, const in
             bits -= 8;
 
             result.write(byte);
+        }
+        for (int i = 0; i < node.escape.size(); ++i)
+        {
+            auto temp = (uint32_t)node.escape[i];
+            if (i != node.escape.size() - 1)
+                temp |= 0x80;
+            temp = temp << 24;
+            int temp_bits = 8;
+
+            value |= temp >> bits;
+            bits += temp_bits;
+
+            if (bits >= 8)
+            {
+                uint8_t byte = (value >> 24) & 0xFF;
+                value <<= 8;
+                bits -= 8;
+
+                result.write(byte);
+            }
         }
     }
 
