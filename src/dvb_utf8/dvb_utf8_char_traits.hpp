@@ -701,7 +701,7 @@ namespace freesat
     {
         std::string operator()(const stream_span &stream) const
         {
-            return freesat_huffman_decode(stream);
+            return freesat::decode(stream);
         }
     };
 #if DVB_UTF8_ENABLE_ENCODE
@@ -709,9 +709,7 @@ namespace freesat
     {
         stream_buffer operator()(const std::string &utf8) const
         {
-            // \todo implement a freesat huffman encode function.
-            //return freesat_huffman_encode(utf8);
-            return "";
+            return freesat::encode(utf8);
         }
     };
 #endif // DVB_UTF8_ENABLE_ENCODE

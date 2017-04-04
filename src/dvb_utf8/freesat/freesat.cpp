@@ -46,6 +46,10 @@ void freesat_table_init()
         table_size[this_table][this_char]++;
     }
 }
+namespace dvb_utf8
+{
+namespace freesat
+{
 
 /** \brief Decode an EPG string as necessary
  *
@@ -54,7 +58,7 @@ void freesat_table_init()
  *  \retval NULL - Can't decode
  *  \return A decoded string
  */
-std::string freesat_huffman_decode(const dvb_utf8::stream_span &stream)
+std::string decode(const dvb_utf8::stream_span &stream)
 {
     std::string uncompressed;
     int uncompressed_len = 30;
@@ -70,11 +74,11 @@ std::string freesat_huffman_decode(const dvb_utf8::stream_span &stream)
     auto src = &stream.data()[stream.tell()];
 
     uncompressed.resize(uncompressed_len + 1);
-    unsigned int value = 0, byte = 0, bit = 0;
-    int p = 0;
+    unsigned int value = 0, bit = 0;
+    int p = 0, byte = 0;
 
     // 'stream' the first 4 bytes into a 32 bit int
-    while (byte < 4 && byte < size) {
+    while (byte < 4u && byte < size) {
         value |= src[byte] << ((3 - byte) * 8);
         byte++;
     }
@@ -183,7 +187,7 @@ hufftab find_node(char ch, int tableid, char lastch)
     __debugbreak();
 }
 
-dvb_utf8::stream_buffer freesat_huffman_encode(const std::string &text, const int tableid /*= 0 */)
+dvb_utf8::stream_buffer encode(const std::string &text, const int tableid /*= 0 */)
 {
     std::vector<bitnode> bitstream;
 
@@ -194,7 +198,7 @@ dvb_utf8::stream_buffer freesat_huffman_encode(const std::string &text, const in
     freesat_table_init();   /**< Load the tables if necessary */
 
     result.write(static_cast<uint8_t>(tableid + 1));
-    for (int i = 0; i < text.size(); ++i)
+    for (size_t i = 0; i < text.size(); ++i)
     {
         auto currch = text[i];
 
@@ -237,7 +241,7 @@ dvb_utf8::stream_buffer freesat_huffman_encode(const std::string &text, const in
 
             result.write(byte);
         }
-        for (int i = 0; i < node.escape.size(); ++i)
+        for (size_t i = 0; i < node.escape.size(); ++i)
         {
             uint32_t temp = static_cast<uint32_t>(node.escape[i]) << 24;
             value |= temp >> bits;
@@ -265,3 +269,6 @@ dvb_utf8::stream_buffer freesat_huffman_encode(const std::string &text, const in
     }
     return result;
 }
+
+} // namespace freesat
+} // namespace dvb_utf8
