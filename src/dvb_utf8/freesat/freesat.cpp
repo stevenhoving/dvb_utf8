@@ -174,7 +174,6 @@ hufftab find_node(char ch, int tableid, char lastch)
     if (ch < 0)
         ch = ESCAPE;
 
-    printf("Find node for: %c (0x%X)\n", ch, ch);
     for (int i = 0; i < table_size[tableid][lastch]; ++i)
     {
         auto &node = tables[tableid][lastch][i];
@@ -189,36 +188,38 @@ dvb_utf8::stream_buffer freesat_huffman_encode(const std::string &text, const in
     std::vector<bitnode> bitstream;
 
     // when not found and not escaping yet, enable escaping the bytes.
-    bool found;
     char lastch = 0;
     dvb_utf8::stream_buffer result;
 
     freesat_table_init();   /**< Load the tables if necessary */
 
-    result.write((uint8_t)(tableid + 1));
+    result.write(static_cast<uint8_t>(tableid + 1));
     for (int i = 0; i < text.size(); ++i)
     {
-        auto itr = text[i];
+        auto currch = text[i];
 
-        auto node = find_node(itr, tableid, lastch);
+        auto node = find_node(currch, tableid, lastch);
         bitnode bit;
         bit.value = node.value;
         bit.bits = node.bits;
 
-        if (itr < 0)
+        if (currch < 0)
         {
             for (; text[i] < 0 && i < text.size(); ++i)
                 bit.escape.emplace_back(text[i]);
 
             // the first ascii character will break the escape sequence
-            if (i != text.size())
+            if (i < text.size())
             {
                 // if the escaped sequence did not start on the first char
+                char firstascii = text[i];
                 if (lastch != 0)
-                    lastch = text[i++];
-                bit.escape.emplace_back(lastch);
+                    lastch = firstascii;
+                bit.escape.emplace_back(firstascii);
             }
         }
+        else
+            lastch = currch;
         bitstream.emplace_back(bit);
     }
 
@@ -238,16 +239,11 @@ dvb_utf8::stream_buffer freesat_huffman_encode(const std::string &text, const in
         }
         for (int i = 0; i < node.escape.size(); ++i)
         {
-            auto temp = (uint32_t)node.escape[i];
-            if (i != node.escape.size() - 1)
-                temp |= 0x80;
-            temp = temp << 24;
-            int temp_bits = 8;
-
+            uint32_t temp = static_cast<uint32_t>(node.escape[i]) << 24;
             value |= temp >> bits;
-            bits += temp_bits;
+            bits += 8;
 
-            if (bits >= 8)
+            while (bits >= 8)
             {
                 uint8_t byte = (value >> 24) & 0xFF;
                 value <<= 8;
@@ -258,6 +254,7 @@ dvb_utf8::stream_buffer freesat_huffman_encode(const std::string &text, const in
         }
     }
 
+    // serialize the left over bits
     while (bits > 0)
     {
         uint8_t byte = (value >> 24) & 0xFF;
