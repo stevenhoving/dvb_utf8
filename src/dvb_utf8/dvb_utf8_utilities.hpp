@@ -16,6 +16,7 @@ void print_hexview(const uint8_t *data, int size)
     printf("\n");
 }
 
+static
 void print_hexview(const std::string &stream)
 {
     auto data = stream.data();
