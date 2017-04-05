@@ -29,3 +29,18 @@ TEST(test_stream_span, test_subspan)
     EXPECT_TRUE(stream.eos());
     EXPECT_FALSE(temp.eos());
 }
+
+TEST(test_stream_span, test_seek)
+{
+    std::vector<uint8_t> data{ 1, 2, 3, 4 };
+    auto stream = stream_span(data);
+    EXPECT_NO_THROW(stream.seek(4, SEEK_SET));
+    EXPECT_TRUE(stream.eos());
+}
+
+TEST(test_stream_span, test_seek_invalid)
+{
+    std::vector<uint8_t> data{ 1, 2, 3, 4 };
+    auto stream = stream_span(data);
+    EXPECT_ANY_THROW(stream.seek(5, SEEK_SET));
+}
