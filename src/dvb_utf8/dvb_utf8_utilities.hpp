@@ -5,6 +5,7 @@
 #include "dvb_utf8_stream_buffer.hpp"
 #include <cstdio>
 
+/* \todo make these all nice template functions */
 namespace dvb_utf8
 {
 
@@ -27,16 +28,16 @@ void print_hexview(const std::string &stream)
 static
 void print_hexview(const stream_span &stream)
 {
-    auto data = &stream.data()[stream.tell()];
-    auto size = stream.size() - stream.tell();
+    auto data = stream.data();
+    auto size = stream.size();
     print_hexview(data, size);
 }
 
 static
 void print_hexview(const stream_buffer &stream)
 {
-    auto data = &stream.data()[stream.tell()];
-    auto size = stream.size() - stream.tell();
+    auto data = stream.data();
+    auto size = stream.size();
     print_hexview(data, size);
 }
 
@@ -65,8 +66,8 @@ void print_stringview(const std::string &stream)
 static
 void print_stringview(const stream_span &stream)
 {
-    auto data = &stream.data()[stream.tell()];
-    auto size = stream.size() - stream.tell();
+    auto data = stream.data();
+    auto size = stream.size();
     print_stringview((const char *)data, size);
 }
 
