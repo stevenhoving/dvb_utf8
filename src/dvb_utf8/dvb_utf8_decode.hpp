@@ -224,14 +224,27 @@ std::string deserialize_string(const stream_span &data, const character_encoding
     return "";
 }
 
-// \todo add table overwrite option (quirk's of the system)
+/*!
+ * Decode dvb text fields to utf8
+ *
+ * \param[in] data      stream_span containing the dvb text field.
+ * \param[in] overwrite overwrite the character encoding from the stream with
+ *                      our own. This allows you to 'fix' incorrect dvb text
+ *                      fields (weird transponders...).
+ *
+ * \return utf8 std::string containing the decoded string.
+ * \throws std::runtime_exception on error.
+ * \todo double check the implied quirk transponders, list taken from old code:
+ *       - Cyfra / Cyfrowy Polsat -> ISO8859-5 mapped to ISO6937
+ *       - Thai providers -> character encoding data position is wrong (not implemented yet)
+ */
 static
 std::string decode(const stream_span &data, const character_encoding overwrite = character_encoding::invalid)
 {
     if (data.empty())
         return "";
 
-    auto encoding = deserialize_encoding(data);
+    character_encoding encoding = deserialize_encoding(data);
     if (overwrite != character_encoding::invalid)
         encoding = overwrite;
 
