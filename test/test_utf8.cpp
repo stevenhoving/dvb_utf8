@@ -12,7 +12,7 @@ TEST(test_utf8, test_utf8_decode)
         'h', 'e', 'n', 'k'
     };
 
-    auto decoded_text = dvb_utf8::decode(stream_span(&data[0], &data[data.size()]));
+    auto decoded_text = dvb_utf8::decode(stream_span(&data[0], &data.data()[data.size()]));
 
     EXPECT_EQ(decoded_text, "henk");
 }
@@ -29,7 +29,7 @@ TEST(test_utf8, test_utf8_non_latin_decode)
         0xA8, 0xCE, 0xA9
     };
 
-    auto decoded_text = dvb_utf8::decode(stream_span(&data[0], &data[data.size()]));
+    auto decoded_text = dvb_utf8::decode(stream_span(&data[0], &data.data()[data.size()]));
 
     // \note because utf8 is 'pass though all we need todo is remove the first
     // byte (this byte is the encoding identifier token).

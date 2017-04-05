@@ -57,7 +57,7 @@ TEST(test_gb18030, test_gb18030_decode)
         //0x0A, 0x20
     };
 
-    auto decoded_text = dvb_utf8::decode(stream_span(&data[0], &data[data.size()]));
+    auto decoded_text = dvb_utf8::decode(stream_span(&data[0], &data.data()[data.size()]));
 
     auto utf8_data = to_utf8_string({
         0x4E, 0x42, 0x41, 0xE5, 0xAE, 0x98, 0xE6, 0x96, 0xB9, 0xE4, 0xBB, 0x8A, 0xE6, 0x97, 0xA5, 0xE5,

@@ -13,7 +13,7 @@ TEST(test_utf16, test_utf16be_decode)
         0xD8, 0x08, 0xDF, 0x45, 0x00, 0x3D, 0x00, 0x52, 0x00, 0x61
     };
 
-    auto decoded_text = dvb_utf8::decode(stream_span(&data[0], &data[data.size()]));
+    auto decoded_text = dvb_utf8::decode(stream_span(&data[0], &data.data()[data.size()]));
 
     auto data_utf8 = to_utf8_string({
         0xF0, 0x92, 0x8D, 0x85, 0x3D, 0x52, 0x61
@@ -29,7 +29,7 @@ TEST(test_utf16, test_utf16le_decode)
         0x08, 0xD8, 0x45, 0xDF, 0x3D, 0x00, 0x52, 0x00, 0x61, 0x00
     };
 
-    auto decoded_text = dvb_utf8::decode(stream_span(&data[0], &data[data.size()]));
+    auto decoded_text = dvb_utf8::decode(stream_span(&data[0], &data.data()[data.size()]));
 
     auto data_utf8 = to_utf8_string({
         0xF0, 0x92, 0x8D, 0x85, 0x3D, 0x52, 0x61
