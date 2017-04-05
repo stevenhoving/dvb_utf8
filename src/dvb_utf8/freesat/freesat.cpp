@@ -199,11 +199,13 @@ dvb_utf8::stream_buffer encode(const std::string &text, const int tableid /*= 1 
     freesat_table_init();   /**< Load the tables if necessary */
 
     result.write(static_cast<uint8_t>(tableid));
+    const int table_index = tableid - 1;
+
     for (size_t i = 0; i < text.size(); ++i)
     {
         auto currch = text[i];
 
-        auto node = find_node(currch, tableid, lastch);
+        auto node = find_node(currch, table_index, lastch);
         bitnode bit;
         bit.value = node.value;
         bit.bits = node.bits;
