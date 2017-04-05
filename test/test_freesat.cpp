@@ -13,7 +13,7 @@ TEST(test_freesat, test_freesat_decode)
     std::vector<uint8_t> data = { 0x01, 0xaa, 0xbb, 0xc0};
 
     auto decoded_text = freesat::decode(
-        stream_span(&data[0], &data.data()[data.size()]));
+        stream_span(data));
 
     EXPECT_EQ(decoded_text, "Naton");
 }
@@ -22,7 +22,7 @@ TEST(test_freesat, test_freesat_decode_tv_grab_dvb_plus_data)
 {
     for (auto &data : test_data)
     {
-        auto stream = stream_span(&data[0], &data.data()[data.size()]);
+        auto stream = stream_span(data);
         uint8_t tableid = stream.read<uint8_t>();
         uint8_t data_len = stream.read<uint8_t>();
 
@@ -41,7 +41,7 @@ TEST(test_freesat, test_freesat_encode)
 
     auto encoded_data = freesat::encode(input, 1);
     auto expected_data = dvb_utf8::stream_buffer(expected);
-    auto decoded_data = freesat::decode(dvb_utf8::stream_span(encoded_data.data(), &encoded_data.data()[expected.size()]));
+    auto decoded_data = freesat::decode(dvb_utf8::stream_span(encoded_data.data(), expected.size()));
 
 
     EXPECT_EQ(expected_data.data_, encoded_data.data_);

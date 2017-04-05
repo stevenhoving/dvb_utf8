@@ -15,7 +15,7 @@ TEST(test_big5, test_big5_decode)
         0xB4, 0xFA, 0xB8, 0xD5
     };
 
-    auto decoded_text = dvb_utf8::decode(stream_span(&data[0], &data.data()[data.size()]));
+    auto decoded_text = dvb_utf8::decode(stream_span(data));
     EXPECT_FALSE(decoded_text.empty());
 }
 
@@ -30,7 +30,7 @@ TEST(test_big5, test_big5_encode_decode)
     });
 
     auto encoded_text = dvb_utf8::encode(test_bug5_utf8_str, character_encoding::big5);
-    auto decoded_text = dvb_utf8::decode(dvb_utf8::stream_span(encoded_text.data(), &encoded_text.data()[encoded_text.size()]));
+    auto decoded_text = dvb_utf8::decode(dvb_utf8::stream_span(encoded_text.data(), encoded_text.size()));
     EXPECT_EQ(test_bug5_utf8_str, decoded_text);
 }
 
@@ -85,7 +85,7 @@ TEST(test_big5, test_big5_decode2)
         0xBC, 0x7B, 0xA1, 0x43
     };
 
-    auto decoded_text = dvb_utf8::decode(stream_span(&data[0], &data.data()[data.size()]));
+    auto decoded_text = dvb_utf8::decode(stream_span(data));
 
     auto utf8_data = to_utf8_string({
         0xE5, 0x8F, 0xB0, 0xE5, 0x8C, 0x97, 0xE7, 0x9C, 0x8B, 0xE5, 0xAE, 0x88, 0xE6, 0x89, 0x80, 0xE6,

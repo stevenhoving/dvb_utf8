@@ -9,25 +9,41 @@ namespace dvb_utf8
 // \note read only all the way
 class stream_span
 {
-    using size_type = std::ptrdiff_t;
 public:
+    using size_type = std::ptrdiff_t;
+
     stream_span() = default;
-    explicit stream_span(const uint8_t *begin, const uint8_t *end) noexcept
+
+    // construct from nullptr (empty span)
+    explicit stream_span(std::nullptr_t) noexcept
+        : stream_span(nullptr, 0)
+    {
+    }
+
+    // construct from pointer + length
+    explicit stream_span(uint8_t *begin, size_type size) noexcept
         : begin_(begin)
-        , end_(end)
+        , size_(size)
         , index_(0)
     {
     }
+
+    // \todo make this std::enable_if ...
+    explicit stream_span(std::vector<uint8_t> &container)
+        : stream_span(container.data(), static_cast<size_type>(container.size()))
+    {
+    }
+
     ~stream_span() noexcept
     {
         // \note debugging check... in production mode this check is not needed.
-        if (begin_ != nullptr && end_ != nullptr && index_ != size())
+        if (begin_ != nullptr && index_ != size_)
             DVB_DBG("Warning, stream_span was not completely parsed\n");
     }
 
     stream_span(stream_span &&other) noexcept
         : begin_(std::move(other.begin_))
-        , end_(std::move(other.end_))
+        , size_(std::move(other.size_))
         , index_(std::move(other.index_))
     {
     }
@@ -35,12 +51,12 @@ public:
     stream_span &operator=(stream_span &&other) noexcept
     {
         begin_ = std::move(other.begin_);
-        end_ = std::move(other.end_);
+        size_ = std::move(other.size_);
         index_ = std::move(other.index_);
 
         // \note debugging... in production mode nulling the parameters is not needed.
         other.begin_ = nullptr;
-        other.end_ = nullptr;
+        other.size_ = 0;
         other.index_ = 0;
 
         return *this;
@@ -56,7 +72,7 @@ public:
     template<typename T>
     auto read() const -> std::enable_if_t<std::is_arithmetic<T>::value, T>
     {
-        if (begin_ +  index_ + sizeof(T) > end_)
+        if (index_ + static_cast<size_type>(sizeof(T)) > size_)
             throw std::runtime_error("Unable to read beyond the span size");
 
         // \todo fix cast
@@ -68,7 +84,7 @@ public:
     template<typename T>
     auto peek() const -> std::enable_if_t<std::is_arithmetic<T>::value, T>
     {
-        if (begin_ + index_ + sizeof(T) > end_)
+        if (index_ + static_cast<size_type>(sizeof(T)) > size_)
             throw std::runtime_error("Unable to peek beyond the buffer size");
 
         // \todo fix cast
@@ -79,21 +95,20 @@ public:
     stream_span read_buffer(const int length) const
     {
         if (length <= 0)
-            return stream_span(nullptr, nullptr);
+            return stream_span(nullptr);
 
-        if (begin_ + length > end_)
+        if (index_ + length > size_)
             throw std::runtime_error("Unable to read buffer beyond the span size");
 
         const auto begin = &begin_[index_];
-        const auto end = &begin_[index_ + length];
         index_ += length;
 
-        return stream_span(begin, end);
+        return stream_span(begin, length);
     }
 
     bool empty() const noexcept
     {
-        return begin_ == nullptr;
+        return begin_ == nullptr || size_ == 0;
     }
 
     // \todo fix integer math issues (int = int + int).
@@ -109,7 +124,7 @@ public:
             new_index = index_ + offset;
             break;
         case SEEK_END:
-            new_index = size() - offset;
+            new_index = size_ - offset;
             break;
         default:
             throw std::runtime_error("Invalid seek origin value");
@@ -119,7 +134,7 @@ public:
         if (new_index < 0)
             throw std::runtime_error("Invalid seek new index, negative");
 
-        if (new_index > size())
+        if (new_index > size_)
             throw std::runtime_error("Invalid seek new index, to big");
 
         index_ = new_index;
@@ -142,16 +157,16 @@ public:
 
     size_type size() const noexcept
     {
-        return end_ - begin_;
+        return size_;
     }
 
     bool eos() const noexcept
     {
-        return index_ >= size();
+        return index_ >= size_;
     }
 private:
-    const uint8_t *begin_ = nullptr;
-    const uint8_t *end_ = nullptr;
+    uint8_t *begin_ = nullptr;
+    size_type size_ = 0;
     mutable size_type index_ = 0;
 };
 

@@ -16,7 +16,7 @@ TEST(test_ucs2, test_ucs2be_decode)
         0xDC, 0xFE, 0xE2, 0x00, 0x0A, 0x00
     };
 
-    auto decoded_text = dvb_utf8::decode(stream_span(data.data(), &data.data()[data.size()]));
+    auto decoded_text = dvb_utf8::decode(stream_span(data));
 
     auto data_utf8 = to_utf8_string({
         0x41, 0x72, 0x61, 0x62, 0x69, 0x63, 0x09, 0x09, 0x09, 0xEF, 0xBA, 0x8D,
