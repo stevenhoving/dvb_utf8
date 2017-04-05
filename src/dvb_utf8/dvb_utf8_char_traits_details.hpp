@@ -79,8 +79,9 @@ struct to_utf8
         stream.seek(i, SEEK_CUR);
 
         // weird edge case, trim the line ending...
-        if (result[result.size() - 1] == '\0')
-            result.resize(result.size() - 1);
+        if (!result.empty())
+            if (result[result.size() - 1] == '\0')
+                result.resize(result.size() - 1);
 
         result.shrink_to_fit();
 
