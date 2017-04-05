@@ -198,7 +198,7 @@ dvb_utf8::stream_buffer encode(const std::string &text, const int tableid /*= 1 
 
     freesat_table_init();   /**< Load the tables if necessary */
 
-    result.write(static_cast<uint8_t>(tableid + 1));
+    result.write(static_cast<uint8_t>(tableid));
     for (size_t i = 0; i < text.size(); ++i)
     {
         auto currch = text[i];
