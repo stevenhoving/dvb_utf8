@@ -187,7 +187,8 @@ hufftab find_node(char ch, int tableid, char lastch)
     __debugbreak();
 }
 
-dvb_utf8::stream_buffer encode(const std::string &text, const int tableid /*= 0 */)
+#if DVB_UTF8_ENABLE_ENCODE
+dvb_utf8::stream_buffer encode(const std::string &text, const int tableid /*= 1 */)
 {
     std::vector<bitnode> bitstream;
 
@@ -269,6 +270,7 @@ dvb_utf8::stream_buffer encode(const std::string &text, const int tableid /*= 0 
     }
     return result;
 }
+#endif // DVB_UTF8_ENABLE_ENCODE
 
 } // namespace freesat
 } // namespace dvb_utf8

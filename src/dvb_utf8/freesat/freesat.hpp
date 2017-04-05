@@ -6,7 +6,17 @@
 #include "dvb_utf8_stream_buffer.hpp"
 #include <string>
 
-std::string freesat_huffman_decode(const dvb_utf8::stream_span &compressed);
-dvb_utf8::stream_buffer freesat_huffman_encode(const std::string &text, const int tableid = 0);
+namespace dvb_utf8
+{
+namespace freesat
+{
+std::string decode(const dvb_utf8::stream_span &compressed);
 
-#endif
+#if DVB_UTF8_ENABLE_ENCODE
+dvb_utf8::stream_buffer encode(const std::string &text, const int tableid = 1);
+#endif // DVB_UTF8_ENABLE_ENCODE
+
+} // namespace freesat
+} // namespace dvb_utf8
+
+#endif // #ifndef FREESAT_H
