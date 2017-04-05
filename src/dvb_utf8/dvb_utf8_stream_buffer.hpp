@@ -52,6 +52,13 @@ public:
 
     void write(const value_type &data) const
     {
+        // \todo should we throw a exception, or is it a warning?
+        if (data.empty())
+        {
+            printf("Warning, we are attempting to write a empty buffer to the stream\n");
+            return;
+        }
+
         prep_write_(data.size());
         auto dst = &data_[index_];
         memmove(dst, data.data(), data.size());
