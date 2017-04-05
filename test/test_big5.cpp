@@ -30,7 +30,7 @@ TEST(test_big5, test_big5_encode_decode)
     });
 
     auto encoded_text = dvb_utf8::encode(test_bug5_utf8_str, character_encoding::big5);
-    auto decoded_text = dvb_utf8::decode(encoded_text);
+    auto decoded_text = dvb_utf8::decode(dvb_utf8::stream_span(encoded_text.data(), &encoded_text.data()[encoded_text.size()]));
     EXPECT_EQ(test_bug5_utf8_str, decoded_text);
 }
 
