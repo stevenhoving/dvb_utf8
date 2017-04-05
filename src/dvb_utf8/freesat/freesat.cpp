@@ -153,13 +153,13 @@ std::string decode(const dvb_utf8::stream_span &stream)
             printf("Missing table %d entry: <%s>\n", tableid + 1, uncompressed.c_str());
             // Entry missing in table.
 
-            // \todo error situation, is skipping over the bytes we have parsed the correct thing todo?
-            stream.seek(byte, SEEK_CUR);
+            stream.seek(0, SEEK_END);
             return uncompressed;
         }
     } while (lastch != STOP && value != 0);
 
-    stream.seek(byte, SEEK_CUR);
+
+    stream.seek(size, SEEK_CUR);
     uncompressed.resize(p);
     return uncompressed;
 }
